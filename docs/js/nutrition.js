@@ -24,6 +24,20 @@ export function kcalPerPerson(recipe, catalog) {
   return roundTo(total / recipe.servings, 10);
 }
 
+/**
+ * Calorias e ingredientes de uma refeição de um plano. Calculados ao mostrar (a partir das receitas e do
+ * catálogo carregados), e não guardados no plano: assim também aparecem nos planos guardados antes de existirem,
+ * e uma correção às calorias chega a todos. Devolve null se a receita já não existir.
+ */
+export function mealDetails(recipeId, people, { recipes, ingredients }, have) {
+  const recipe = recipes.find((r) => r.id === recipeId);
+  if (!recipe) return null;
+  return {
+    kcal: kcalPerPerson(recipe, ingredients),
+    ingredients: scaledIngredients(recipe, people, ingredients, have),
+  };
+}
+
 /** Ingredientes de uma receita para `people` pessoas, na ordem da receita. `have` marca o que já está em casa. */
 export function scaledIngredients(recipe, people, catalog, have) {
   const factor = people / recipe.servings;

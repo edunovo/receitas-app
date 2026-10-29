@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 
-import { kcalPerPerson, scaledIngredients } from "../docs/js/nutrition.js";
+import { kcalPerPerson, mealDetails, scaledIngredients } from "../docs/js/nutrition.js";
 import { makePlan } from "../docs/js/planner.js";
 
 const load = (name) => JSON.parse(readFileSync(new URL(`../docs/data/${name}`, import.meta.url), "utf8"));
@@ -44,25 +44,29 @@ test("sem calorias de um ingrediente não se inventa um total", () => {
 });
 
 test("as quantidades escalam com o número de pessoas e marcam o que está em casa", () => {
-  const recipe = recipes.find((r) => r.id === "tortilha-batata"); // 4 ovos para 2 pessoas
+  const recipe = recipes.find((r) => r.id === "omelete-atum"); // 4 ovos para 2 pessoas
   const four = scaledIngredients(recipe, 4, catalog, new Set(["cebola"]));
   assert.equal(four.find((i) => i.name === "Ovos").qty, 8);
   assert.equal(four.find((i) => i.name === "Cebola").home, true);
-  assert.equal(four.find((i) => i.name === "Batata").home, false);
+  assert.equal(four.find((i) => i.name === "Tomate fresco").home, false);
   const one = scaledIngredients(recipe, 1, catalog, new Set());
   assert.equal(one.find((i) => i.name === "Ovos").qty, 2);
 });
 
-test("o plano traz ingredientes e calorias em cada refeição", () => {
+test("os detalhes de uma refeição calculam-se pelo id, também para planos guardados há muito tempo", () => {
   const plan = makePlan(
     { provider: "x", budget: 60, meals: 4, people: 3, require_tags: [], balance: true, have: ["alho"], avoid: [], seed: 1 },
     { recipes, products, ingredients: catalog },
   );
+  // Um plano guardado antes de existirem as calorias não as traz; os detalhes vêm das receitas.
+  assert.ok(plan.meals.every((m) => m.kcal === undefined && m.ingredients === undefined));
   for (const meal of plan.meals) {
-    assert.ok(meal.kcal > 0, `${meal.recipe_id} sem calorias`);
-    assert.ok(meal.ingredients.length > 0);
-    const original = recipes.find((r) => r.id === meal.recipe_id);
-    assert.equal(meal.ingredients.length, original.ingredients.length);
-    for (const item of meal.ingredients) if (item.name === "Alho") assert.equal(item.home, true);
+    const info = mealDetails(meal.recipe_id, 3, { recipes, ingredients: catalog }, new Set(["alho"]));
+    assert.ok(info.kcal > 0, `${meal.recipe_id} sem calorias`);
+    assert.equal(info.ingredients.length, recipes.find((r) => r.id === meal.recipe_id).ingredients.length);
   }
+});
+
+test("uma receita que já não existe não rebenta: não há detalhes para mostrar", () => {
+  assert.equal(mealDetails("lentilhas-estufadas", 2, { recipes, ingredients: catalog }, new Set()), null);
 });

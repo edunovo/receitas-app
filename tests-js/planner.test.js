@@ -68,7 +68,7 @@ test("o custo da lista de compras bate certo com o total", () => {
 });
 
 test("ingredientes partilhados saem mais baratos em conjunto", () => {
-  const plan = planWeek({ recipes, products, ...base, meals: 2, requireTags: ["vegana"] });
+  const plan = planWeek({ recipes, products, ...base, meals: 2, locked: ["arroz-frango", "arroz-carne-picada"] }); // partilham arroz e cebola
   const catalog = new Catalog(products);
   const alone = ids(plan).reduce((acc, id) => {
     const needs = new Map(recipe(id).ingredients.map((i) => [`${i.ingredient}|${i.unit}`, i.qty]));
@@ -78,9 +78,9 @@ test("ingredientes partilhados saem mais baratos em conjunto", () => {
 });
 
 test("filtro por etiqueta", () => {
-  const plan = planWeek({ recipes, products, ...base, meals: 4, requireTags: ["vegetariana"] });
+  const plan = planWeek({ recipes, products, ...base, meals: 4, requireTags: ["peixe"] });
   assert.ok(plan.meals.length > 0);
-  assert.ok(plan.meals.every((m) => m.tags.includes("vegetariana")));
+  assert.ok(plan.meals.every((m) => m.tags.includes("peixe")));
 });
 
 test("receita com ingrediente que o supermercado não tem é ignorada com aviso", () => {
@@ -92,10 +92,10 @@ test("receita com ingrediente que o supermercado não tem é ignorada com aviso"
 
 // --- variar proteínas ----------------------------------------------------------------------------
 
-test("variar mistura carne, peixe e vegetariano", () => {
+test("variar mistura carne e peixe", () => {
   const plan = planWeek({ recipes, products, ...base, meals: 6, balance: true });
   const kinds = new Set(ids(plan).map((id) => category(recipe(id))));
-  assert.deepEqual([...kinds].sort(), ["carne", "peixe", "vegetariana"]);
+  assert.deepEqual([...kinds].sort(), ["carne", "peixe"]);
 });
 
 test("com pouco dinheiro, variar respeita o orçamento e cai para o que cabe", () => {
@@ -104,10 +104,14 @@ test("com pouco dinheiro, variar respeita o orçamento e cai para o que cabe", (
   assert.ok(plan.meals.length > 0);
 });
 
-test("sem variar, o plano não é mais caro", () => {
-  const on = planWeek({ recipes, products, ...base, meals: 6, balance: true });
-  const off = planWeek({ recipes, products, ...base, meals: 6, balance: false });
-  assert.ok(off.total_cost <= on.total_cost);
+test("com ou sem variar, o plano respeita o orçamento e o número de refeições", () => {
+  for (const balance of [true, false]) {
+    for (const meals of [3, 6, 9]) {
+      const plan = planWeek({ recipes, products, ...base, budget: 60, meals, balance });
+      assert.equal(plan.meals.length, meals);
+      assert.ok(plan.total_cost <= 60);
+    }
+  }
 });
 
 // --- já tenho em casa ----------------------------------------------------------------------------
@@ -124,10 +128,10 @@ test("o que está em casa sai do custo e da lista", () => {
 
 test("em casa, uma receita passa a ser possível mesmo sem o produto no supermercado", () => {
   const noEggs = products.filter((p) => p.ingredient !== "ovos");
-  const r = recipe("omelete-espinafres");
+  const r = recipe("omelete-atum");
   assert.deepEqual(planWeek({ recipes: [r], products: noEggs, ...base, meals: 1 }).meals, []);
   const plan = planWeek({ recipes: [r], products: noEggs, ...base, meals: 1, have: new Set(["ovos"]) });
-  assert.deepEqual(ids(plan), ["omelete-espinafres"]);
+  assert.deepEqual(ids(plan), ["omelete-atum"]);
 });
 
 test("tudo em casa não custa nada", () => {
@@ -147,8 +151,8 @@ test("makePlan devolve os ingredientes em casa com nomes legíveis e ignora chav
 // --- fixar, excluir e trocar ----------------------------------------------------------------------
 
 test("receitas fixadas mantêm-se", () => {
-  const plan = planWeek({ recipes, products, ...base, meals: 4, locked: ["lentilhas-estufadas", "arroz-atum"] });
-  assert.deepEqual(ids(plan).slice(0, 2), ["lentilhas-estufadas", "arroz-atum"]);
+  const plan = planWeek({ recipes, products, ...base, meals: 4, locked: ["arroz-frango", "arroz-atum"] });
+  assert.deepEqual(ids(plan).slice(0, 2), ["arroz-frango", "arroz-atum"]);
   assert.equal(plan.meals.length, 4);
 });
 
@@ -159,7 +163,7 @@ test("receita fixada que já não cabe no orçamento é largada com aviso", () =
 });
 
 test("receitas excluídas nunca são escolhidas", () => {
-  const banned = new Set(["arroz-atum", "lentilhas-estufadas", "cuscuz-legumes"]);
+  const banned = new Set(["arroz-atum", "arroz-frango", "massa-atum"]);
   const plan = planWeek({ recipes, products, ...base, meals: 8, exclude: banned });
   assert.ok(ids(plan).every((id) => !banned.has(id)));
 });

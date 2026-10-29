@@ -25,29 +25,6 @@
      "Junta a carne picada e mexe até perder a cor crua.",
      "Adiciona o tomate pelado, sal e pimenta; deixa cozinhar 20 minutos.",
      "Coze o esparguete em água com sal, escorre e serve com o molho."]},
-  {"id": "omelete-espinafres", "title": "Omelete de espinafres com batata", "servings": 2, "minutes": 25, "tags": ["vegetariana"],
-   "ingredients": [
-     {"ingredient": "ovos", "qty": 4, "unit": "un"},
-     {"ingredient": "espinafres", "qty": 150, "unit": "g"},
-     {"ingredient": "batata", "qty": 300, "unit": "g"},
-     {"ingredient": "cebola", "qty": 50, "unit": "g"}],
-   "steps": [
-     "Coze a batata em cubos pequenos até ficar macia e escorre.",
-     "Salteia a cebola e os espinafres em azeite até murcharem.",
-     "Bate os ovos com sal, junta a batata e os espinafres.",
-     "Deita na frigideira antiaderente e cozinha dos dois lados até ficar dourada."]},
-  {"id": "grao-espinafres", "title": "Grão-de-bico com espinafres", "servings": 2, "minutes": 25, "tags": ["vegetariana", "vegana"],
-   "ingredients": [
-     {"ingredient": "grao-de-bico", "qty": 400, "unit": "g"},
-     {"ingredient": "espinafres", "qty": 200, "unit": "g"},
-     {"ingredient": "cebola", "qty": 100, "unit": "g"},
-     {"ingredient": "alho", "qty": 10, "unit": "g"},
-     {"ingredient": "tomate-pelado", "qty": 200, "unit": "g"}],
-   "steps": [
-     "Refoga a cebola e o alho em azeite.",
-     "Junta o tomate pelado e deixa apurar 5 minutos.",
-     "Adiciona o grão escorrido e cozinha 10 minutos.",
-     "Mistura os espinafres no fim até murcharem e acerta o sal."]},
   {"id": "bacalhau-natas", "title": "Bacalhau com natas", "servings": 2, "minutes": 50, "tags": ["peixe"],
    "ingredients": [
      {"ingredient": "bacalhau", "qty": 400, "unit": "g"},
@@ -81,29 +58,6 @@
      "Junta o tomate pelado e deixa apurar 5 minutos.",
      "Adiciona o arroz e o dobro do volume de água; cozinha 12 minutos.",
      "Mistura o atum escorrido, acerta o sal e deixa repousar 2 minutos."]},
-  {"id": "lentilhas-estufadas", "title": "Lentilhas estufadas", "servings": 2, "minutes": 40, "tags": ["vegetariana", "vegana"],
-   "ingredients": [
-     {"ingredient": "lentilhas-cozidas", "qty": 400, "unit": "g"},
-     {"ingredient": "cenoura", "qty": 150, "unit": "g"},
-     {"ingredient": "cebola", "qty": 100, "unit": "g"},
-     {"ingredient": "alho", "qty": 10, "unit": "g"},
-     {"ingredient": "tomate-pelado", "qty": 200, "unit": "g"}],
-   "steps": [
-     "Refoga a cebola, o alho e a cenoura em rodelas em azeite.",
-     "Junta o tomate pelado e deixa cozinhar 10 minutos.",
-     "Adiciona as lentilhas escorridas e um pouco de água; deixa estufar 15 minutos.",
-     "Tempera com sal e pimenta."]},
-  {"id": "massa-brocolos", "title": "Massa de brócolos e queijo", "servings": 2, "minutes": 25, "tags": ["vegetariana"],
-   "ingredients": [
-     {"ingredient": "massa", "qty": 200, "unit": "g"},
-     {"ingredient": "brocolos", "qty": 300, "unit": "g"},
-     {"ingredient": "natas", "qty": 100, "unit": "ml"},
-     {"ingredient": "queijo-ralado", "qty": 50, "unit": "g"},
-     {"ingredient": "alho", "qty": 10, "unit": "g"}],
-   "steps": [
-     "Coze a massa em água com sal; nos últimos 4 minutos junta os brócolos em ramos.",
-     "Refoga o alho em azeite e junta as natas.",
-     "Escorre a massa e os brócolos, mistura com o molho e o queijo ralado."]},
   {"id": "frango-forno-legumes", "title": "Frango no forno com batata e legumes", "servings": 2, "minutes": 55, "tags": ["carne"],
    "ingredients": [
      {"ingredient": "peito-frango", "qty": 400, "unit": "g"},
@@ -116,30 +70,6 @@
      "Corta a batata, a courgette, o pimento e a cebola e tempera com azeite, sal e pimenta.",
      "Coloca o frango por cima dos legumes.",
      "Assa 40 minutos, virando o frango a meio."]},
-  {"id": "arroz-feijao", "title": "Arroz de feijão com cenoura", "servings": 2, "minutes": 30, "tags": ["vegetariana", "vegana"],
-   "ingredients": [
-     {"ingredient": "feijao", "qty": 400, "unit": "g"},
-     {"ingredient": "arroz", "qty": 150, "unit": "g"},
-     {"ingredient": "cebola", "qty": 100, "unit": "g"},
-     {"ingredient": "cenoura", "qty": 100, "unit": "g"},
-     {"ingredient": "tomate-pelado", "qty": 200, "unit": "g"}],
-   "steps": [
-     "Refoga a cebola e a cenoura ralada em azeite.",
-     "Junta o tomate pelado e o feijão escorrido; cozinha 5 minutos.",
-     "Adiciona o arroz e o dobro do volume de água; cozinha 15 minutos em lume brando.",
-     "Acerta o sal e serve."]},
-  {"id": "cuscuz-legumes", "title": "Cuscuz com legumes e grão", "servings": 2, "minutes": 20, "tags": ["vegetariana", "vegana"],
-   "ingredients": [
-     {"ingredient": "cuscuz", "qty": 150, "unit": "g"},
-     {"ingredient": "grao-de-bico", "qty": 200, "unit": "g"},
-     {"ingredient": "courgette", "qty": 200, "unit": "g"},
-     {"ingredient": "pimento", "qty": 100, "unit": "g"},
-     {"ingredient": "cebola", "qty": 50, "unit": "g"}],
-   "steps": [
-     "Cobre o cuscuz com água a ferver na mesma medida, tapa e deixa 5 minutos; solta com um garfo.",
-     "Salteia a cebola, a courgette e o pimento em cubos em azeite.",
-     "Junta o grão escorrido e aquece 3 minutos.",
-     "Mistura tudo com o cuscuz e tempera com sal."]},
   {"id": "massa-atum", "title": "Massa com atum e tomate", "servings": 2, "minutes": 20, "tags": ["peixe"],
    "ingredients": [
      {"ingredient": "massa", "qty": 200, "unit": "g"},
@@ -186,42 +116,6 @@
      "Grelha o salmão temperado numa frigideira, 4 minutos de cada lado.",
      "Salteia o alho laminado e os espinafres em azeite até murcharem.",
      "Serve o salmão sobre o arroz com os espinafres."]},
-  {"id": "feijao-legumes", "title": "Feijão preto com legumes", "servings": 2, "minutes": 30, "tags": ["vegetariana", "vegana"],
-   "ingredients": [
-     {"ingredient": "feijao", "qty": 400, "unit": "g"},
-     {"ingredient": "courgette", "qty": 150, "unit": "g"},
-     {"ingredient": "pimento", "qty": 100, "unit": "g"},
-     {"ingredient": "cebola", "qty": 100, "unit": "g"},
-     {"ingredient": "alho", "qty": 10, "unit": "g"},
-     {"ingredient": "tomate-pelado", "qty": 200, "unit": "g"}],
-   "steps": [
-     "Refoga a cebola e o alho em azeite.",
-     "Junta o pimento e a courgette em cubos e cozinha 5 minutos.",
-     "Adiciona o tomate pelado e o feijão escorrido.",
-     "Deixa cozinhar 15 minutos em lume brando e acerta o sal."]},
-  {"id": "lentilhas-arroz", "title": "Lentilhas com arroz", "servings": 2, "minutes": 30, "tags": ["vegetariana", "vegana"],
-   "ingredients": [
-     {"ingredient": "lentilhas-cozidas", "qty": 400, "unit": "g"},
-     {"ingredient": "arroz", "qty": 150, "unit": "g"},
-     {"ingredient": "cebola", "qty": 100, "unit": "g"},
-     {"ingredient": "cenoura", "qty": 100, "unit": "g"}],
-   "steps": [
-     "Refoga a cebola e a cenoura ralada em azeite.",
-     "Junta o arroz e mexe 1 minuto.",
-     "Adiciona o dobro do volume de água e cozinha 10 minutos.",
-     "Mistura as lentilhas escorridas, tempera e deixa mais 5 minutos."]},
-  {"id": "massa-espinafres-natas", "title": "Massa com espinafres e natas", "servings": 2, "minutes": 20, "tags": ["vegetariana"],
-   "ingredients": [
-     {"ingredient": "massa", "qty": 200, "unit": "g"},
-     {"ingredient": "espinafres", "qty": 200, "unit": "g"},
-     {"ingredient": "natas", "qty": 100, "unit": "ml"},
-     {"ingredient": "queijo-ralado", "qty": 30, "unit": "g"},
-     {"ingredient": "alho", "qty": 10, "unit": "g"}],
-   "steps": [
-     "Coze a massa em água com sal.",
-     "Refoga o alho em azeite, junta os espinafres e deixa murchar.",
-     "Adiciona as natas e deixa ferver 2 minutos.",
-     "Mistura a massa escorrida com o molho e polvilha com queijo ralado."]},
   {"id": "coxas-frango-batata", "title": "Coxas de frango assadas com batata", "servings": 2, "minutes": 55, "tags": ["carne"],
    "ingredients": [
      {"ingredient": "perna-frango", "qty": 650, "unit": "g"},
@@ -268,61 +162,6 @@
      "Junta a carne picada e mexe até perder a cor crua.",
      "Adiciona o tomate pelado e deixa apurar 5 minutos.",
      "Junta o arroz e o dobro do volume de água; cozinha 15 minutos em lume brando."]},
-  {"id": "omelete-cogumelos", "title": "Omelete de cogumelos", "servings": 2, "minutes": 20, "tags": ["vegetariana"],
-   "ingredients": [
-     {"ingredient": "ovos", "qty": 4, "unit": "un"},
-     {"ingredient": "cogumelos", "qty": 200, "unit": "g"},
-     {"ingredient": "cebola", "qty": 50, "unit": "g"}],
-   "steps": [
-     "Salteia a cebola e os cogumelos laminados em azeite até perderem a água.",
-     "Bate os ovos com sal e pimenta.",
-     "Deita os ovos sobre os cogumelos e deixa cozinhar em lume brando.",
-     "Dobra a omelete ao meio e serve."]},
-  {"id": "massa-cogumelos-natas", "title": "Massa com cogumelos e natas", "servings": 2, "minutes": 20, "tags": ["vegetariana"],
-   "ingredients": [
-     {"ingredient": "massa", "qty": 200, "unit": "g"},
-     {"ingredient": "cogumelos", "qty": 250, "unit": "g"},
-     {"ingredient": "natas", "qty": 100, "unit": "ml"},
-     {"ingredient": "alho", "qty": 10, "unit": "g"},
-     {"ingredient": "queijo-ralado", "qty": 30, "unit": "g"}],
-   "steps": [
-     "Coze a massa em água com sal.",
-     "Refoga o alho em azeite, junta os cogumelos e salteia até dourarem.",
-     "Adiciona as natas e deixa ferver 2 minutos.",
-     "Mistura a massa escorrida com o molho e polvilha com queijo ralado."]},
-  {"id": "arroz-ervilhas", "title": "Arroz de ervilhas", "servings": 2, "minutes": 30, "tags": ["vegetariana", "vegana"],
-   "ingredients": [
-     {"ingredient": "arroz", "qty": 150, "unit": "g"},
-     {"ingredient": "ervilhas", "qty": 200, "unit": "g"},
-     {"ingredient": "cebola", "qty": 50, "unit": "g"},
-     {"ingredient": "alho", "qty": 10, "unit": "g"}],
-   "steps": [
-     "Refoga a cebola e o alho picados em azeite.",
-     "Junta o arroz e mexe 1 minuto.",
-     "Adiciona o dobro do volume de água e as ervilhas; cozinha 15 minutos em lume brando.",
-     "Acerta o sal e deixa repousar 2 minutos."]},
-  {"id": "sopa-abobora", "title": "Sopa de abóbora", "servings": 2, "minutes": 35, "tags": ["vegetariana", "vegana"],
-   "ingredients": [
-     {"ingredient": "abobora", "qty": 400, "unit": "g"},
-     {"ingredient": "cenoura", "qty": 150, "unit": "g"},
-     {"ingredient": "batata", "qty": 200, "unit": "g"},
-     {"ingredient": "cebola", "qty": 100, "unit": "g"}],
-   "steps": [
-     "Refoga a cebola em azeite até ficar macia.",
-     "Junta a abóbora, a cenoura e a batata em cubos e água até cobrir.",
-     "Cozinha 25 minutos, até tudo estar macio.",
-     "Tritura, acerta o sal e serve quente."]},
-  {"id": "creme-couve-flor", "title": "Creme de couve-flor", "servings": 2, "minutes": 35, "tags": ["vegetariana", "vegana"],
-   "ingredients": [
-     {"ingredient": "couve-flor", "qty": 400, "unit": "g"},
-     {"ingredient": "batata", "qty": 200, "unit": "g"},
-     {"ingredient": "cebola", "qty": 100, "unit": "g"},
-     {"ingredient": "alho", "qty": 10, "unit": "g"}],
-   "steps": [
-     "Refoga a cebola e o alho em azeite.",
-     "Junta a couve-flor em ramos e a batata em cubos, com água até cobrir.",
-     "Cozinha 20 minutos, até ficar tudo macio.",
-     "Tritura até ficar cremoso e acerta o sal e a pimenta."]},
   {"id": "peru-salteado", "title": "Peru salteado com legumes", "servings": 2, "minutes": 25, "tags": ["carne"],
    "ingredients": [
      {"ingredient": "bifes-peru", "qty": 300, "unit": "g"},
@@ -356,16 +195,6 @@
      "Dispõe a batata às rodelas e a cebola num tabuleiro, com azeite e sal; assa 20 minutos.",
      "Junta a pescada temperada e o tomate às rodelas.",
      "Assa mais 15 a 20 minutos, até o peixe se desfazer em lascas."]},
-  {"id": "batata-doce-grao", "title": "Batata-doce assada com grão", "servings": 2, "minutes": 40, "tags": ["vegetariana", "vegana"],
-   "ingredients": [
-     {"ingredient": "batata-doce", "qty": 400, "unit": "g"},
-     {"ingredient": "grao-de-bico", "qty": 200, "unit": "g"},
-     {"ingredient": "cebola", "qty": 50, "unit": "g"}],
-   "steps": [
-     "Pré-aquece o forno a 200 °C.",
-     "Corta a batata-doce em cubos e a cebola em meias-luas; tempera com azeite, sal e pimenta.",
-     "Assa 25 minutos e junta o grão escorrido.",
-     "Assa mais 10 minutos, até a batata-doce estar macia e dourada."]},
   {"id": "salada-grao-atum", "title": "Salada de grão com atum e milho", "servings": 2, "minutes": 15, "tags": ["peixe"],
    "ingredients": [
      {"ingredient": "grao-de-bico", "qty": 200, "unit": "g"},
@@ -378,28 +207,6 @@
      "Corta o tomate em cubos e a cebola em fatias muito finas.",
      "Mistura tudo numa taça.",
      "Tempera com azeite, sal e pimenta e serve fria."]},
-  {"id": "massa-caprese", "title": "Massa à caprese", "servings": 2, "minutes": 20, "tags": ["vegetariana"],
-   "ingredients": [
-     {"ingredient": "massa", "qty": 200, "unit": "g"},
-     {"ingredient": "tomate", "qty": 300, "unit": "g"},
-     {"ingredient": "mozzarella", "qty": 125, "unit": "g"},
-     {"ingredient": "alho", "qty": 10, "unit": "g"}],
-   "steps": [
-     "Coze a massa em água com sal.",
-     "Refoga o alho em azeite, junta o tomate aos cubos e cozinha 8 minutos.",
-     "Mistura a massa escorrida com o molho.",
-     "Junta a mozzarella aos pedaços e serve logo, para derreter ligeiramente."]},
-  {"id": "feijao-verde-ovos", "title": "Feijão-verde com ovos", "servings": 2, "minutes": 30, "tags": ["vegetariana"],
-   "ingredients": [
-     {"ingredient": "feijao-verde", "qty": 300, "unit": "g"},
-     {"ingredient": "ovos", "qty": 4, "unit": "un"},
-     {"ingredient": "batata", "qty": 200, "unit": "g"},
-     {"ingredient": "cebola", "qty": 50, "unit": "g"}],
-   "steps": [
-     "Coze a batata em cubos e o feijão-verde em água com sal; escorre.",
-     "Refoga a cebola em azeite e junta o feijão-verde e a batata.",
-     "Faz quatro covas e parte um ovo em cada uma.",
-     "Tapa e cozinha em lume brando até as claras estarem firmes."]},
   {"id": "frango-cogumelos-natas", "title": "Frango com cogumelos e natas", "servings": 2, "minutes": 30, "tags": ["carne"],
    "ingredients": [
      {"ingredient": "peito-frango", "qty": 300, "unit": "g"},
@@ -568,105 +375,5 @@
      "Tempera o frango com sal e pimenta e dora-o em azeite numa panela.",
      "Junta a cebola em rodelas e deixa murchar.",
      "Adiciona o tomate pelado, a batata-doce aos cubos e meio copo de água.",
-     "Tapa e cozinha 35 minutos em lume brando, até o frango estar tenro."]},
-  {"id": "massa-courgette-mozzarella", "title": "Massa com courgette e mozzarella", "servings": 2, "minutes": 25, "tags": ["vegetariana"],
-   "ingredients": [
-     {"ingredient": "massa", "qty": 200, "unit": "g"},
-     {"ingredient": "courgette", "qty": 200, "unit": "g"},
-     {"ingredient": "mozzarella", "qty": 125, "unit": "g"},
-     {"ingredient": "tomate", "qty": 150, "unit": "g"},
-     {"ingredient": "alho", "qty": 10, "unit": "g"}],
-   "steps": [
-     "Cozinha a massa em água com sal e escorre.",
-     "Salteia a courgette em meias-luas com o alho picado em azeite.",
-     "Junta o tomate aos cubos e cozinha 3 minutos.",
-     "Mistura a massa e a mozzarella em pedaços e deixa derreter, mexendo."]},
-  {"id": "arroz-cogumelos", "title": "Arroz de cogumelos", "servings": 2, "minutes": 30, "tags": ["vegetariana","vegana"],
-   "ingredients": [
-     {"ingredient": "arroz", "qty": 150, "unit": "g"},
-     {"ingredient": "cogumelos", "qty": 250, "unit": "g"},
-     {"ingredient": "cebola", "qty": 100, "unit": "g"},
-     {"ingredient": "alho", "qty": 10, "unit": "g"}],
-   "steps": [
-     "Refoga a cebola e o alho picados em azeite.",
-     "Junta os cogumelos laminados e cozinha até largarem a água.",
-     "Adiciona o arroz e o dobro do volume de água quente, com sal.",
-     "Tapa e cozinha 15 minutos em lume brando."]},
-  {"id": "tortilha-batata", "title": "Tortilha de batata", "servings": 2, "minutes": 35, "tags": ["vegetariana"],
-   "ingredients": [
-     {"ingredient": "ovos", "qty": 4, "unit": "un"},
-     {"ingredient": "batata", "qty": 300, "unit": "g"},
-     {"ingredient": "cebola", "qty": 100, "unit": "g"}],
-   "steps": [
-     "Corta a batata em rodelas finas e a cebola em tiras.",
-     "Cozinha-as em azeite, em lume brando e tapadas, durante 15 minutos.",
-     "Mistura com os ovos batidos, sal e pimenta.",
-     "Cozinha na frigideira 4 minutos de cada lado, virando com a ajuda de um prato."]},
-  {"id": "couve-flor-gratinada", "title": "Couve-flor gratinada", "servings": 2, "minutes": 40, "tags": ["vegetariana"],
-   "ingredients": [
-     {"ingredient": "couve-flor", "qty": 400, "unit": "g"},
-     {"ingredient": "natas", "qty": 100, "unit": "ml"},
-     {"ingredient": "queijo-ralado", "qty": 30, "unit": "g"}],
-   "steps": [
-     "Cozinha a couve-flor em ramos em água com sal durante 8 minutos e escorre.",
-     "Coloca num tabuleiro e cobre com as natas, sal e pimenta.",
-     "Polvilha com o queijo ralado.",
-     "Gratina 20 minutos a 200 °C."]},
-  {"id": "estufado-abobora-lentilhas", "title": "Estufado de abóbora e lentilhas", "servings": 2, "minutes": 35, "tags": ["vegetariana","vegana"],
-   "ingredients": [
-     {"ingredient": "abobora", "qty": 400, "unit": "g"},
-     {"ingredient": "lentilhas-cozidas", "qty": 400, "unit": "g"},
-     {"ingredient": "cebola", "qty": 100, "unit": "g"},
-     {"ingredient": "alho", "qty": 10, "unit": "g"},
-     {"ingredient": "tomate-pelado", "qty": 200, "unit": "g"}],
-   "steps": [
-     "Refoga a cebola e o alho picados em azeite.",
-     "Junta a abóbora aos cubos e o tomate pelado; cozinha 15 minutos, tapado.",
-     "Adiciona as lentilhas escorridas e meio copo de água.",
-     "Tempera com sal e pimenta e cozinha mais 8 minutos."]},
-  {"id": "ovos-mexidos-cogumelos-espinafres", "title": "Ovos mexidos com cogumelos e espinafres", "servings": 2, "minutes": 15, "tags": ["vegetariana"],
-   "ingredients": [
-     {"ingredient": "ovos", "qty": 4, "unit": "un"},
-     {"ingredient": "cogumelos", "qty": 200, "unit": "g"},
-     {"ingredient": "espinafres", "qty": 150, "unit": "g"}],
-   "steps": [
-     "Salteia os cogumelos laminados em azeite até largarem a água.",
-     "Junta os espinafres e deixa murchar.",
-     "Deita os ovos batidos com sal e pimenta.",
-     "Mexe em lume brando até ficarem cremosos."]},
-  {"id": "guisado-feijao-batata-doce", "title": "Guisado de feijão preto com batata-doce", "servings": 2, "minutes": 40, "tags": ["vegetariana","vegana"],
-   "ingredients": [
-     {"ingredient": "feijao", "qty": 400, "unit": "g"},
-     {"ingredient": "batata-doce", "qty": 400, "unit": "g"},
-     {"ingredient": "cebola", "qty": 100, "unit": "g"},
-     {"ingredient": "alho", "qty": 10, "unit": "g"},
-     {"ingredient": "pimento", "qty": 100, "unit": "g"}],
-   "steps": [
-     "Refoga a cebola, o alho e o pimento em tiras em azeite.",
-     "Junta a batata-doce aos cubos e meio copo de água; tapa e cozinha 15 minutos.",
-     "Adiciona o feijão escorrido.",
-     "Tempera com sal e pimenta e cozinha mais 8 minutos."]},
-  {"id": "salada-grao-milho-tomate", "title": "Salada de grão, milho e tomate", "servings": 2, "minutes": 10, "tags": ["vegetariana","vegana"],
-   "ingredients": [
-     {"ingredient": "grao-de-bico", "qty": 400, "unit": "g"},
-     {"ingredient": "milho", "qty": 150, "unit": "g"},
-     {"ingredient": "tomate", "qty": 300, "unit": "g"},
-     {"ingredient": "cebola", "qty": 50, "unit": "g"}],
-   "steps": [
-     "Escorre e lava o grão e o milho.",
-     "Corta o tomate em cubos e a cebola em tiras finas.",
-     "Mistura tudo numa taça.",
-     "Tempera com azeite, sal e pimenta."]},
-  {"id": "sopa-feijao-verde-batata", "title": "Sopa de feijão-verde e batata", "servings": 2, "minutes": 35, "tags": ["vegetariana","vegana"],
-   "ingredients": [
-     {"ingredient": "feijao-verde", "qty": 300, "unit": "g"},
-     {"ingredient": "batata", "qty": 400, "unit": "g"},
-     {"ingredient": "cenoura", "qty": 100, "unit": "g"},
-     {"ingredient": "cebola", "qty": 100, "unit": "g"},
-     {"ingredient": "alho", "qty": 10, "unit": "g"}],
-   "steps": [
-     "Corta todos os legumes em pedaços pequenos.",
-     "Cozinha-os em água com sal e um fio de azeite durante 25 minutos.",
-     "Passa com a varinha mágica até ficar cremoso.",
-     "Prova, ajusta o sal e serve quente com pimenta."]}
+     "Tapa e cozinha 35 minutos em lume brando, até o frango estar tenro."]}
 ]

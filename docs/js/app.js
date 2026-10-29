@@ -1,4 +1,5 @@
 import { LAST_USER_KEY, PRICES_KEY, createBackend, isConfigured, readJson, rememberUser, writeJson } from "./backend.js";
+import { mealDetails } from "./nutrition.js";
 import { PlanError, category, makePlan } from "./planner.js";
 import { catalogStatus } from "./status.js";
 import { initThemeMenu } from "./theme.js";
@@ -235,6 +236,8 @@ function buildChips(box, items, selected) {
   );
 }
 
+const usedIngredients = { has: (key) => recipes.some((r) => r.ingredients.some((i) => i.ingredient === key)) };
+
 async function loadPrefs() {
   let settings = null;
   try {
@@ -245,7 +248,9 @@ async function loadPrefs() {
   }
   buildChips(
     $("pantry"),
-    Object.entries(ingredients.ingredients).map(([key, info]) => ({ key, label: info.label })),
+    Object.entries(ingredients.ingredients)
+      .filter(([key]) => usedIngredients.has(key)) // só o que as receitas usam
+      .map(([key, info]) => ({ key, label: info.label })),
     new Set(settings ? settings.pantry : DEFAULT_PANTRY),
   );
   buildChips(
@@ -273,7 +278,7 @@ function buildRequest(seed, extra = {}) {
     budget: Number(f.budget.value),
     meals: Number(f.meals.value),
     people: Number(f.people.value),
-    require_tags: f.vegetarian.checked ? ["vegetariana"] : [],
+    require_tags: [],
     balance: f.balance.checked,
     have: checkedValues($("pantry")),
     avoid: checkedValues($("avoid")),
@@ -287,14 +292,14 @@ function restoreForm(request) {
   f.budget.value = request.budget;
   f.meals.value = request.meals;
   f.people.value = request.people;
-  f.vegetarian.checked = request.require_tags.includes("vegetariana");
   f.balance.checked = request.balance;
 }
 
 // A cor e a etiqueta de cada refeição vêm do tipo de proteína (o mesmo critério do planeador).
+// "vegetariana" fica só para mostrar planos guardados antes de as receitas vegetarianas serem retiradas.
 const KIND = { carne: ["carne", "Carne"], peixe: ["peixe", "Peixe"], vegetariana: ["veg", "Vegetariana"] };
 
-function mealItem(meal) {
+function mealItem(meal, info) {
   const [kind, kindLabel] = KIND[category(meal)];
   const li = el("li", undefined, "meal");
   li.dataset.k = kind;
@@ -304,8 +309,7 @@ function mealItem(meal) {
   clock.style.cssText = "display:inline-flex;align-items:center;gap:4px";
   clock.append(icon("clock", 14), document.createTextNode(`${meal.minutes} min`));
   sub.append(el("span", kindLabel, "tag"), clock);
-  // Os planos guardados antes de existir a estimativa não trazem calorias nem ingredientes.
-  if (meal.kcal) sub.append(el("span", `≈ ${meal.kcal} kcal`));
+  if (info?.kcal) sub.append(el("span", `≈ ${info.kcal} kcal`));
   const text = el("div", undefined, "txt");
   text.append(el("div", meal.title, "name"), sub);
 
@@ -329,18 +333,18 @@ function mealItem(meal) {
   const steps = el("ol", undefined, "steps");
   steps.append(...meal.steps.map((s) => el("li", s)));
   const details = el("details", undefined, "steps-box");
-  details.append(el("summary", meal.ingredients ? "Ingredientes e passos" : "Ver passos"));
-  if (meal.ingredients) {
+  details.append(el("summary", info ? "Ingredientes e passos" : "Ver passos"));
+  if (info) {
     const list = el("ul", undefined, "ing");
     list.append(
-      ...meal.ingredients.map((item) => {
+      ...info.ingredients.map((item) => {
         const row = el("li");
         row.append(el("span", item.name), el("span", `${item.qty.toLocaleString("pt-PT")} ${item.unit}${item.home ? " · em casa" : ""}`));
         return row;
       }),
     );
     details.append(el("h4", "Ingredientes"), list);
-    if (meal.kcal) details.append(el("p", "Calorias estimadas por pessoa, sem azeite, sal nem pimenta.", "muted"));
+    if (info.kcal) details.append(el("p", "Calorias estimadas por pessoa, sem azeite, sal nem pimenta.", "muted"));
     details.append(el("h4", "Passos"));
   }
   details.append(steps);
@@ -446,7 +450,12 @@ function render(plan) {
 
   renderHero(plan);
   $("warnings").replaceChildren(...plan.warnings.map((w) => el("div", w, "warn")));
-  $("meals").replaceChildren(...plan.meals.map(mealItem));
+  // As calorias e os ingredientes calculam-se agora, por isso aparecem também em planos guardados há mais tempo.
+  const people = plan.people ?? Number($("form").people.value);
+  const have = new Set(checkedValues($("pantry")));
+  $("meals").replaceChildren(
+    ...plan.meals.map((meal) => mealItem(meal, mealDetails(meal.recipe_id, people, { recipes, ingredients }, have))),
+  );
   renderShopping(plan);
   $("result").hidden = false;
   $("again").hidden = false;

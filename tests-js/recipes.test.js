@@ -17,6 +17,11 @@ const MEAT_OR_FISH = [
 const ANIMAL_PRODUCTS = ["ovos", "natas", "queijo-ralado", "mozzarella"];
 const uses = (recipe, keys) => recipe.ingredients.some((i) => keys.includes(i.ingredient));
 
+test("o livro só tem pratos de carne e de peixe", () => {
+  for (const r of recipes) assert.ok(r.tags.includes("carne") || r.tags.includes("peixe"), `${r.id} não é de carne nem de peixe`);
+  assert.ok(recipes.every((r) => uses(r, MEAT_OR_FISH)), "há uma receita sem carne nem peixe nos ingredientes");
+});
+
 test("os ids das receitas não se repetem", () => {
   assert.equal(new Set(recipes.map((r) => r.id)).size, recipes.length);
 });

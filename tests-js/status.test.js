@@ -28,7 +28,7 @@ test("classifica os ingredientes pelo que o catálogo tem", () => {
 test("lista as receitas que ficam impossíveis e o que lhes falta", () => {
   const { recipes_unavailable, recipes_total } = catalogStatus({ recipes, ingredients, prices });
   const missing = Object.fromEntries(recipes_unavailable.map((r) => [r.id, r.missing]));
-  assert.ok(missing["omelete-espinafres"].includes("Ovos"));
+  assert.ok(missing["omelete-atum"].includes("Ovos"));
   assert.ok(recipes_total >= recipes_unavailable.length && recipes_unavailable.length > 0);
 });
 

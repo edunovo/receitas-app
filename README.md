@@ -45,14 +45,14 @@ Abre http://localhost:8000. (No VS Code/Claude, o `.claude/launch.json` já tem 
 
 ## Funcionalidades
 
-- **Plano por orçamento:** escolhe refeições dentro do orçamento, a variar entre carne, peixe e vegetariano, com custo calculado em embalagens inteiras.
+- **Plano por orçamento:** escolhe refeições dentro do orçamento, a variar entre carne e peixe (o livro de receitas só tem pratos de carne e de peixe), com custo calculado em embalagens inteiras.
 - **Lista de compras com caixas:** marcas o que já pões no carrinho, tocando na linha. As marcas ficam no dispositivo e valem enquanto o plano for o mesmo. Vem agrupada pela **secção do supermercado**: frescos primeiro e congelados no fim.
 - **Já tenho em casa:** o que marcares não entra no custo nem na lista. O **alho** vem marcado por defeito. Fica guardado por utilizador.
 - **Evitar:** glúten, lactose, peixe ou ovos (indicativo: confirma sempre nos rótulos; `docs/data/ingredients.json`).
 - **Fixar e trocar:** *Fixar* mantém uma refeição em *Outra sugestão*; *Trocar* substitui só essa refeição, dentro do orçamento.
 - **Plano guardado:** cada utilizador tem só o último plano; um novo substitui o anterior. *Mostrar plano* volta a mostrá-lo, em qualquer dispositivo.
 - **Sem rede:** a app, as receitas e os últimos preços ficam guardados no dispositivo, por isso abre, mostra o plano e até gera planos novos sem ligação (o SDK do Firebase também fica guardado).
-- **Ingredientes e calorias:** cada refeição mostra os ingredientes para o número de pessoas escolhido e uma estimativa de calorias por pessoa. É só uma estimativa: usa valores aproximados por 100 g de `docs/data/ingredients.json` (campo `kcal`) e não conta azeite, sal nem pimenta. Ao acrescentar um ingrediente novo, junta-lhe o `kcal` (e o `unit_g` se for contado à unidade); um teste avisa se faltar.
+- **Ingredientes e calorias:** cada refeição mostra os ingredientes para o número de pessoas escolhido e uma estimativa de calorias por pessoa, calculadas ao mostrar (por isso aparecem também em planos guardados antes). É só uma estimativa: usa valores aproximados por 100 g de `docs/data/ingredients.json` (campo `kcal`) e não conta azeite, sal nem pimenta. Ao acrescentar um ingrediente novo, junta-lhe o `kcal` (e o `unit_g` se for contado à unidade); um teste avisa se faltar.
 - **Temas:** o botão da paleta, no topo, escolhe entre *Automático* (segue o tema do telemóvel), *Fresco* (claro), *Sóbrio* (escuro) e *Mercado* (papel e talão). A escolha fica no dispositivo. Cada tema é um bloco de cores em `docs/style.css`; para criar outro, copia um bloco e acrescenta-o em `docs/js/theme.js`. Um teste confirma o contraste das cores (WCAG).
 - **Administração (só admin):** estado do catálogo (ingredientes sem produtos, receitas indisponíveis, links que falharam).
 
