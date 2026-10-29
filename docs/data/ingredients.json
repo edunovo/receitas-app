@@ -3,7 +3,8 @@
     "gluten": "Glúten",
     "lactose": "Lactose",
     "peixe": "Peixe",
-    "ovo": "Ovos"
+    "ovo": "Ovos",
+    "marisco": "Marisco"
   },
   "ingredients": {
     "arroz": {"label": "Arroz", "kcal": 355},
@@ -42,6 +43,11 @@
     "batata-doce": {"label": "Batata-doce", "kcal": 86},
     "ervilhas": {"label": "Ervilhas", "kcal": 80},
     "feijao-verde": {"label": "Feijão-verde", "kcal": 31},
-    "milho": {"label": "Milho doce", "kcal": 85}
+    "milho": {"label": "Milho doce", "kcal": 85},
+    "bife-vaca": {"label": "Bife de vaca", "kcal": 150},
+    "bifanas-porco": {"label": "Bifanas de porco", "kcal": 160},
+    "camarao": {"label": "Camarão", "kcal": 85, "allergens": ["marisco"]},
+    "carapau": {"label": "Carapau inteiro", "kcal": 70, "allergens": ["peixe"]},
+    "choco": {"label": "Choco", "kcal": 80, "allergens": ["marisco"]}
   }
 }

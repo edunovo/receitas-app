@@ -375,5 +375,152 @@
      "Tempera o frango com sal e pimenta e dora-o em azeite numa panela.",
      "Junta a cebola em rodelas e deixa murchar.",
      "Adiciona o tomate pelado, a batata-doce aos cubos e meio copo de água.",
-     "Tapa e cozinha 35 minutos em lume brando, até o frango estar tenro."]}
+     "Tapa e cozinha 35 minutos em lume brando, até o frango estar tenro."]},
+  {"id": "bife-vaca-arroz-brocolos", "title": "Bife de vaca com arroz e brócolos", "servings": 2, "minutes": 30, "tags": ["carne"],
+   "ingredients": [
+     {"ingredient": "bife-vaca", "qty": 300, "unit": "g"},
+     {"ingredient": "arroz", "qty": 150, "unit": "g"},
+     {"ingredient": "brocolos", "qty": 300, "unit": "g"},
+     {"ingredient": "alho", "qty": 10, "unit": "g"}],
+   "steps": [
+     "Cozinha o arroz em água com sal e, nos últimos 5 minutos, junta os brócolos.",
+     "Tempera os bifes com sal e pimenta.",
+     "Grelha os bifes numa frigideira bem quente 2 a 3 minutos de cada lado e deixa repousar.",
+     "Salteia o alho laminado em azeite, rega os bifes e serve com o arroz e os brócolos."]},
+  {"id": "bife-vaca-batata-cogumelos", "title": "Bife de vaca com batata e cogumelos", "servings": 2, "minutes": 35, "tags": ["carne"],
+   "ingredients": [
+     {"ingredient": "bife-vaca", "qty": 300, "unit": "g"},
+     {"ingredient": "batata", "qty": 400, "unit": "g"},
+     {"ingredient": "cogumelos", "qty": 200, "unit": "g"},
+     {"ingredient": "cebola", "qty": 50, "unit": "g"}],
+   "steps": [
+     "Corta a batata em gomos e assa 25 minutos a 200 °C com azeite e sal.",
+     "Salteia a cebola e os cogumelos laminados em azeite até largarem a água.",
+     "Tempera os bifes e grelha 2 a 3 minutos de cada lado.",
+     "Serve os bifes com a batata e os cogumelos."]},
+  {"id": "bifanas-arroz-feijao-verde", "title": "Bifanas de porco com arroz e feijão-verde", "servings": 2, "minutes": 30, "tags": ["carne"],
+   "ingredients": [
+     {"ingredient": "bifanas-porco", "qty": 300, "unit": "g"},
+     {"ingredient": "arroz", "qty": 150, "unit": "g"},
+     {"ingredient": "feijao-verde", "qty": 300, "unit": "g"},
+     {"ingredient": "alho", "qty": 10, "unit": "g"}],
+   "steps": [
+     "Cozinha o arroz em água com sal e, nos últimos 8 minutos, junta o feijão-verde aos pedaços.",
+     "Tempera as bifanas com sal, pimenta e o alho picado.",
+     "Grelha as bifanas em azeite 2 a 3 minutos de cada lado.",
+     "Serve as bifanas sobre o arroz com o feijão-verde."]},
+  {"id": "bifanas-batata-pimento", "title": "Bifanas salteadas com batata e pimento", "servings": 2, "minutes": 35, "tags": ["carne"],
+   "ingredients": [
+     {"ingredient": "bifanas-porco", "qty": 300, "unit": "g"},
+     {"ingredient": "batata", "qty": 400, "unit": "g"},
+     {"ingredient": "pimento", "qty": 150, "unit": "g"},
+     {"ingredient": "cebola", "qty": 100, "unit": "g"}],
+   "steps": [
+     "Corta a batata em cubos e cozinha em água com sal até ficar macia.",
+     "Refoga a cebola e o pimento em tiras em azeite durante 8 minutos.",
+     "Junta as bifanas temperadas com sal e pimenta e salteia 4 minutos.",
+     "Mistura a batata e serve."]},
+  {"id": "bifanas-cuscuz-courgette", "title": "Bifanas com cuscuz e courgette", "servings": 2, "minutes": 25, "tags": ["carne"],
+   "ingredients": [
+     {"ingredient": "bifanas-porco", "qty": 300, "unit": "g"},
+     {"ingredient": "cuscuz", "qty": 150, "unit": "g"},
+     {"ingredient": "courgette", "qty": 200, "unit": "g"},
+     {"ingredient": "alho", "qty": 10, "unit": "g"}],
+   "steps": [
+     "Rega o cuscuz com o mesmo volume de água a ferver, tapa e deixa 5 minutos; solta com um garfo.",
+     "Salteia a courgette em rodelas com o alho picado em azeite.",
+     "Tempera as bifanas e grelha 2 a 3 minutos de cada lado.",
+     "Serve as bifanas com o cuscuz e a courgette."]},
+  {"id": "massa-bifanas-tomate", "title": "Massa com bifanas e tomate", "servings": 2, "minutes": 30, "tags": ["carne"],
+   "ingredients": [
+     {"ingredient": "massa", "qty": 200, "unit": "g"},
+     {"ingredient": "bifanas-porco", "qty": 300, "unit": "g"},
+     {"ingredient": "tomate-pelado", "qty": 200, "unit": "g"},
+     {"ingredient": "cebola", "qty": 100, "unit": "g"}],
+   "steps": [
+     "Corta as bifanas em tiras e tempera com sal e pimenta.",
+     "Refoga a cebola picada em azeite e junta as bifanas até dourarem.",
+     "Adiciona o tomate pelado e cozinha 10 minutos.",
+     "Cozinha a massa em água com sal, escorre e envolve no molho."]},
+  {"id": "arroz-camarao", "title": "Arroz de camarão", "servings": 2, "minutes": 30, "tags": ["peixe"],
+   "ingredients": [
+     {"ingredient": "camarao", "qty": 200, "unit": "g"},
+     {"ingredient": "arroz", "qty": 150, "unit": "g"},
+     {"ingredient": "tomate-pelado", "qty": 200, "unit": "g"},
+     {"ingredient": "cebola", "qty": 100, "unit": "g"},
+     {"ingredient": "alho", "qty": 10, "unit": "g"}],
+   "steps": [
+     "Refoga a cebola e o alho picados em azeite.",
+     "Junta o tomate pelado e cozinha 5 minutos.",
+     "Adiciona o arroz e o dobro do volume de água quente, com sal; tapa e cozinha 12 minutos.",
+     "Junta o camarão e cozinha mais 4 minutos, tapado."]},
+  {"id": "massa-camarao-tomate", "title": "Massa com camarão e tomate", "servings": 2, "minutes": 25, "tags": ["peixe"],
+   "ingredients": [
+     {"ingredient": "massa", "qty": 200, "unit": "g"},
+     {"ingredient": "camarao", "qty": 250, "unit": "g"},
+     {"ingredient": "tomate-pelado", "qty": 200, "unit": "g"},
+     {"ingredient": "alho", "qty": 10, "unit": "g"}],
+   "steps": [
+     "Cozinha a massa em água com sal e escorre.",
+     "Refoga o alho picado em azeite, junta o tomate pelado e cozinha 8 minutos.",
+     "Adiciona o camarão e cozinha 3 a 4 minutos, até ficar rosado.",
+     "Mistura a massa no molho e serve com pimenta."]},
+  {"id": "camarao-cuscuz-courgette", "title": "Camarão salteado com cuscuz e courgette", "servings": 2, "minutes": 20, "tags": ["peixe"],
+   "ingredients": [
+     {"ingredient": "camarao", "qty": 250, "unit": "g"},
+     {"ingredient": "cuscuz", "qty": 150, "unit": "g"},
+     {"ingredient": "courgette", "qty": 200, "unit": "g"},
+     {"ingredient": "alho", "qty": 10, "unit": "g"}],
+   "steps": [
+     "Rega o cuscuz com o mesmo volume de água a ferver, tapa e deixa 5 minutos; solta com um garfo.",
+     "Salteia a courgette em rodelas com o alho picado em azeite.",
+     "Junta o camarão temperado com sal e pimenta e salteia 3 a 4 minutos.",
+     "Serve o camarão e a courgette sobre o cuscuz."]},
+  {"id": "carapau-batata-pimento", "title": "Carapau assado com batata e pimento", "servings": 2, "minutes": 45, "tags": ["peixe"],
+   "ingredients": [
+     {"ingredient": "carapau", "qty": 600, "unit": "g"},
+     {"ingredient": "batata", "qty": 500, "unit": "g"},
+     {"ingredient": "pimento", "qty": 150, "unit": "g"},
+     {"ingredient": "cebola", "qty": 100, "unit": "g"}],
+   "steps": [
+     "Corta a batata em rodelas e o pimento e a cebola em tiras; coloca num tabuleiro com azeite e sal.",
+     "Assa 20 minutos a 200 °C.",
+     "Tempera o carapau com sal e pimenta e coloca-o por cima dos legumes.",
+     "Assa mais 20 minutos, até o peixe estar cozinhado."]},
+  {"id": "carapau-arroz-tomate", "title": "Carapau grelhado com arroz de tomate", "servings": 2, "minutes": 40, "tags": ["peixe"],
+   "ingredients": [
+     {"ingredient": "carapau", "qty": 600, "unit": "g"},
+     {"ingredient": "arroz", "qty": 150, "unit": "g"},
+     {"ingredient": "tomate-pelado", "qty": 200, "unit": "g"},
+     {"ingredient": "cebola", "qty": 100, "unit": "g"},
+     {"ingredient": "alho", "qty": 10, "unit": "g"}],
+   "steps": [
+     "Refoga a cebola e o alho picados em azeite e junta o tomate pelado.",
+     "Adiciona o arroz e o dobro do volume de água quente, com sal; tapa e cozinha 15 minutos.",
+     "Tempera o carapau com sal e pimenta.",
+     "Grelha o carapau numa frigideira ou grelhador 5 minutos de cada lado e serve com o arroz."]},
+  {"id": "arroz-choco", "title": "Arroz de choco", "servings": 2, "minutes": 40, "tags": ["peixe"],
+   "ingredients": [
+     {"ingredient": "choco", "qty": 400, "unit": "g"},
+     {"ingredient": "arroz", "qty": 150, "unit": "g"},
+     {"ingredient": "tomate-pelado", "qty": 200, "unit": "g"},
+     {"ingredient": "cebola", "qty": 100, "unit": "g"},
+     {"ingredient": "alho", "qty": 10, "unit": "g"}],
+   "steps": [
+     "Corta o choco em pedaços.",
+     "Refoga a cebola e o alho picados em azeite, junta o choco e cozinha 10 minutos.",
+     "Adiciona o tomate pelado, o arroz e o dobro do volume de água quente, com sal.",
+     "Tapa e cozinha 15 minutos em lume brando."]},
+  {"id": "choco-guisado-batata", "title": "Choco guisado com batata", "servings": 2, "minutes": 50, "tags": ["peixe"],
+   "ingredients": [
+     {"ingredient": "choco", "qty": 400, "unit": "g"},
+     {"ingredient": "batata", "qty": 400, "unit": "g"},
+     {"ingredient": "cebola", "qty": 100, "unit": "g"},
+     {"ingredient": "tomate-pelado", "qty": 200, "unit": "g"},
+     {"ingredient": "pimento", "qty": 100, "unit": "g"}],
+   "steps": [
+     "Refoga a cebola e o pimento em tiras em azeite.",
+     "Junta o choco aos pedaços e o tomate pelado; cozinha 15 minutos, tapado.",
+     "Adiciona a batata aos cubos e meio copo de água.",
+     "Tempera com sal e pimenta e cozinha 20 minutos, até a batata estar macia."]}
 ]

@@ -10,10 +10,9 @@ const load = (name) => JSON.parse(readFileSync(new URL(`../docs/data/${name}`, i
 const recipes = load("recipes.json");
 const { ingredients } = load("ingredients.json");
 
-const MEAT_OR_FISH = [
-  "peito-frango", "perna-frango", "carne-picada", "costeleta-porco", "salsicha-fresca", "bifes-peru",
-  "bacalhau", "atum", "salmao", "pescada",
-];
+const FISH = ["bacalhau", "atum", "salmao", "pescada", "camarao", "carapau", "choco"];
+const MEAT = ["peito-frango", "perna-frango", "carne-picada", "costeleta-porco", "salsicha-fresca", "bifes-peru", "bife-vaca", "bifanas-porco"];
+const MEAT_OR_FISH = [...MEAT, ...FISH];
 const ANIMAL_PRODUCTS = ["ovos", "natas", "queijo-ralado", "mozzarella"];
 const uses = (recipe, keys) => recipe.ingredients.some((i) => keys.includes(i.ingredient));
 
@@ -52,9 +51,12 @@ test("as etiquetas são verdadeiras: vegetariana sem carne nem peixe, vegana sem
 
 test("a categoria da receita bate com os ingredientes", () => {
   for (const r of recipes) {
-    const fish = uses(r, ["bacalhau", "atum", "salmao", "pescada"]);
-    const meat = uses(r, MEAT_OR_FISH.filter((k) => !["bacalhau", "atum", "salmao", "pescada"].includes(k)));
-    const expected = fish ? "peixe" : meat ? "carne" : "vegetariana";
+    const expected = uses(r, FISH) ? "peixe" : uses(r, MEAT) ? "carne" : "vegetariana";
     assert.equal(category(r), expected, `${r.id}: etiquetada como ${category(r)} mas os ingredientes dizem ${expected}`);
   }
+});
+
+test("marisco leva o alergénio marisco e peixe leva o alergénio peixe", () => {
+  for (const key of ["camarao", "choco"]) assert.ok(ingredients[key].allergens.includes("marisco"), `${key} sem alergénio marisco`);
+  for (const key of ["carapau", "bacalhau", "atum", "salmao", "pescada"]) assert.ok(ingredients[key].allergens.includes("peixe"), `${key} sem alergénio peixe`);
 });

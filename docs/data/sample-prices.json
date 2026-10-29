@@ -312,6 +312,62 @@
    "pack_qty": 400,
    "unit": "g",
    "ingredient": "pescada"
+  },
+  {
+   "id": "bife-traseiro",
+   "name": "Bife Traseiro de Bovino 400g",
+   "price": 6.8,
+   "pack_qty": 400,
+   "unit": "g",
+   "ingredient": "bife-vaca"
+  },
+  {
+   "id": "bifanas-1kg",
+   "name": "Bifanas de Porco 1kg",
+   "price": 4.99,
+   "pack_qty": 1000,
+   "unit": "g",
+   "ingredient": "bifanas-porco"
+  },
+  {
+   "id": "bifanas-600",
+   "name": "Bifanas de Porco 600g",
+   "price": 2.99,
+   "pack_qty": 600,
+   "unit": "g",
+   "ingredient": "bifanas-porco"
+  },
+  {
+   "id": "miolo-camarao",
+   "name": "Miolo de Camarão 60/80 400g",
+   "price": 7.99,
+   "pack_qty": 400,
+   "unit": "g",
+   "ingredient": "camarao"
+  },
+  {
+   "id": "carapau-1kg",
+   "name": "Carapau Pequeno Congelado 1kg",
+   "price": 4.99,
+   "pack_qty": 1000,
+   "unit": "g",
+   "ingredient": "carapau"
+  },
+  {
+   "id": "carapau-pelim",
+   "name": "Carapau Pelim Congelado 900g",
+   "price": 5.84,
+   "pack_qty": 900,
+   "unit": "g",
+   "ingredient": "carapau"
+  },
+  {
+   "id": "choco-limpo",
+   "name": "Chocos Limpos 750g",
+   "price": 10.49,
+   "pack_qty": 750,
+   "unit": "g",
+   "ingredient": "choco"
   }
  ],
  "errors": [],
