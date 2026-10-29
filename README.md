@@ -52,6 +52,7 @@ Abre http://localhost:8000. (No VS Code/Claude, o `.claude/launch.json` já tem 
 - **Fixar e trocar:** *Fixar* mantém uma refeição em *Outra sugestão*; *Trocar* substitui só essa refeição, dentro do orçamento.
 - **Plano guardado:** cada utilizador tem só o último plano; um novo substitui o anterior. *Mostrar plano* volta a mostrá-lo, em qualquer dispositivo.
 - **Sem rede:** a app, as receitas e os últimos preços ficam guardados no dispositivo, por isso abre, mostra o plano e até gera planos novos sem ligação (o SDK do Firebase também fica guardado).
+- **Ingredientes e calorias:** cada refeição mostra os ingredientes para o número de pessoas escolhido e uma estimativa de calorias por pessoa. É só uma estimativa: usa valores aproximados por 100 g de `docs/data/ingredients.json` (campo `kcal`) e não conta azeite, sal nem pimenta. Ao acrescentar um ingrediente novo, junta-lhe o `kcal` (e o `unit_g` se for contado à unidade); um teste avisa se faltar.
 - **Temas:** o botão da paleta, no topo, escolhe entre *Automático* (segue o tema do telemóvel), *Fresco* (claro), *Sóbrio* (escuro) e *Mercado* (papel e talão). A escolha fica no dispositivo. Cada tema é um bloco de cores em `docs/style.css`; para criar outro, copia um bloco e acrescenta-o em `docs/js/theme.js`. Um teste confirma o contraste das cores (WCAG).
 - **Administração (só admin):** estado do catálogo (ingredientes sem produtos, receitas indisponíveis, links que falharam).
 
@@ -99,7 +100,7 @@ Testa as regras no Simulador do Firebase (FIREBASE.md, passo 5).
 
 ## Estrutura de `docs/`
 
-- `js/planner.js`: o planeador. `js/status.js`: estado do catálogo. `js/backend.js`: Firebase / demonstração / sem rede.
+- `js/planner.js`: o planeador. `js/nutrition.js`: calorias e ingredientes por refeição. `js/status.js`: estado do catálogo. `js/backend.js`: Firebase / demonstração / sem rede.
 - `js/app.js`: a interface. `js/theme.js`: temas e o menu para os escolher. `js/firebase-config.js`: a tua configuração do Firebase.
 - `data/`: receitas e ingredientes (com alergénios), mais os preços de exemplo.
 - `sw.js`: service worker (abrir sem rede). `manifest.webmanifest` e `icons/`: instalação no telemóvel.

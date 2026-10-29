@@ -7,6 +7,8 @@
 // O plano devolvido usa chaves em snake_case (total_cost, recipe_id...) porque é o formato que
 // fica guardado no Firestore e que a interface lê.
 
+import { kcalPerPerson, scaledIngredients } from "./nutrition.js";
+
 const EPS = 1e-9;
 const keyOf = (ingredient, unit) => `${ingredient}|${unit}`;
 const splitKey = (key) => key.split("|");
@@ -259,5 +261,11 @@ export function makePlan(request, { recipes, products, ingredients }) {
     throw new PlanError("Não encontrei nenhuma alternativa que caiba no orçamento.");
   }
   plan.at_home = plan.at_home.map((key) => label(key, ingredients));
+  const byId = new Map(recipes.map((r) => [r.id, r]));
+  for (const meal of plan.meals) {
+    const recipe = byId.get(meal.recipe_id);
+    meal.kcal = kcalPerPerson(recipe, ingredients);
+    meal.ingredients = scaledIngredients(recipe, request.people, ingredients, have);
+  }
   return plan;
 }

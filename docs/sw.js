@@ -3,7 +3,7 @@
 // e a app guarda cópias no dispositivo (ver app.js e backend.js).
 //
 // Os caminhos são relativos porque no GitHub Pages a app vive numa subpasta (…github.io/<repositório>/).
-const CACHE = "receitas-v8";
+const CACHE = "receitas-v9";
 const SHELL = [
   "./",
   "style.css",
@@ -11,6 +11,7 @@ const SHELL = [
   "js/app.js",
   "js/backend.js",
   "js/planner.js",
+  "js/nutrition.js",
   "js/status.js",
   "js/theme.js",
   "js/firebase-config.js",

@@ -304,6 +304,8 @@ function mealItem(meal) {
   clock.style.cssText = "display:inline-flex;align-items:center;gap:4px";
   clock.append(icon("clock", 14), document.createTextNode(`${meal.minutes} min`));
   sub.append(el("span", kindLabel, "tag"), clock);
+  // Os planos guardados antes de existir a estimativa não trazem calorias nem ingredientes.
+  if (meal.kcal) sub.append(el("span", `≈ ${meal.kcal} kcal`));
   const text = el("div", undefined, "txt");
   text.append(el("div", meal.title, "name"), sub);
 
@@ -327,7 +329,21 @@ function mealItem(meal) {
   const steps = el("ol", undefined, "steps");
   steps.append(...meal.steps.map((s) => el("li", s)));
   const details = el("details", undefined, "steps-box");
-  details.append(el("summary", "Ver passos"), steps);
+  details.append(el("summary", meal.ingredients ? "Ingredientes e passos" : "Ver passos"));
+  if (meal.ingredients) {
+    const list = el("ul", undefined, "ing");
+    list.append(
+      ...meal.ingredients.map((item) => {
+        const row = el("li");
+        row.append(el("span", item.name), el("span", `${item.qty.toLocaleString("pt-PT")} ${item.unit}${item.home ? " · em casa" : ""}`));
+        return row;
+      }),
+    );
+    details.append(el("h4", "Ingredientes"), list);
+    if (meal.kcal) details.append(el("p", "Calorias estimadas por pessoa, sem azeite, sal nem pimenta.", "muted"));
+    details.append(el("h4", "Passos"));
+  }
+  details.append(steps);
 
   li.append(main, details);
   return li;

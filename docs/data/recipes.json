@@ -539,7 +539,7 @@
   {"id": "massa-salsichas-tomate", "title": "Massa com salsichas e tomate", "servings": 2, "minutes": 30, "tags": ["carne"],
    "ingredients": [
      {"ingredient": "massa", "qty": 200, "unit": "g"},
-     {"ingredient": "salsicha-fresca", "qty": 500, "unit": "g"},
+     {"ingredient": "salsicha-fresca", "qty": 300, "unit": "g"},
      {"ingredient": "tomate-pelado", "qty": 400, "unit": "g"},
      {"ingredient": "cebola", "qty": 100, "unit": "g"}],
    "steps": [
