@@ -210,6 +210,7 @@ export function planWeek({
   return {
     provider,
     budget,
+    people,
     total_cost: currentCost,
     remaining: round2(budget - currentCost),
     meals: chosen.map((r) => ({ recipe_id: r.id, title: r.title, minutes: r.minutes, tags: r.tags, steps: r.steps })),

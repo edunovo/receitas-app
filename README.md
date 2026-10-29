@@ -52,6 +52,7 @@ Abre http://localhost:8000. (No VS Code/Claude, o `.claude/launch.json` já tem 
 - **Fixar e trocar:** *Fixar* mantém uma refeição em *Outra sugestão*; *Trocar* substitui só essa refeição, dentro do orçamento.
 - **Plano guardado:** cada utilizador tem só o último plano; um novo substitui o anterior. *Mostrar plano* volta a mostrá-lo, em qualquer dispositivo.
 - **Sem rede:** a app, as receitas e os últimos preços ficam guardados no dispositivo, por isso abre, mostra o plano e até gera planos novos sem ligação (o SDK do Firebase também fica guardado).
+- **Temas:** o botão da paleta, no topo, escolhe entre *Automático* (segue o tema do telemóvel), *Fresco* (claro), *Sóbrio* (escuro) e *Mercado* (papel e talão). A escolha fica no dispositivo. Cada tema é um bloco de cores em `docs/style.css`; para criar outro, copia um bloco e acrescenta-o em `docs/js/theme.js`. Um teste confirma o contraste das cores (WCAG).
 - **Administração (só admin):** estado do catálogo (ingredientes sem produtos, receitas indisponíveis, links que falharam).
 
 ### O que mudou em relação ao servidor antigo
@@ -90,7 +91,7 @@ Nunca coloques no repositório a chave da conta de serviço (`*-firebase-adminsd
 ## Testes
 
 ```powershell
-node --test tests-js/    # planeador e estado do catálogo
+node --test tests-js/    # planeador, estado do catálogo, temas e contraste das cores
 ```
 
 O que **não** está testado automaticamente: a ligação ao Firebase (login e Firestore) e as regras de segurança.
@@ -99,6 +100,6 @@ Testa as regras no Simulador do Firebase (FIREBASE.md, passo 5).
 ## Estrutura de `docs/`
 
 - `js/planner.js`: o planeador. `js/status.js`: estado do catálogo. `js/backend.js`: Firebase / demonstração / sem rede.
-- `js/app.js`: a interface. `js/firebase-config.js`: a tua configuração do Firebase.
+- `js/app.js`: a interface. `js/theme.js`: temas e o menu para os escolher. `js/firebase-config.js`: a tua configuração do Firebase.
 - `data/`: receitas e ingredientes (com alergénios), mais os preços de exemplo.
 - `sw.js`: service worker (abrir sem rede). `manifest.webmanifest` e `icons/`: instalação no telemóvel.

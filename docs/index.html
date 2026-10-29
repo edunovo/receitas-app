@@ -4,33 +4,76 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Receitas por orçamento</title>
-  <meta name="theme-color" content="#2f7d4f">
+  <meta name="theme-color" content="#f5f3ec">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/png" href="icons/icon-192.png">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <!-- Escolhe o tema antes de a página aparecer, para não piscar. A lógica completa está em js/theme.js. -->
+  <script>
+    (function () {
+      var theme = "fresco";
+      try {
+        var saved = localStorage.getItem("receitas:theme");
+        if (saved === "fresco" || saved === "sobrio" || saved === "mercado") theme = saved;
+        else if (matchMedia("(prefers-color-scheme: dark)").matches) theme = "sobrio";
+      } catch (e) {}
+      document.documentElement.dataset.theme = theme;
+    })();
+  </script>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <main>
-    <div class="topbar">
-      <h1>Receitas por orçamento</h1>
-      <div id="session" class="session" hidden>
-        <span id="who" class="muted"></span>
-        <button type="button" id="logout" class="secondary small">Sair</button>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <defs>
+      <symbol id="i-plate" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2M7 2v20M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>
+      </symbol>
+      <symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 17v5M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/>
+      </symbol>
+      <symbol id="i-swap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8M21 3v5h-5M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16M8 16H3v5"/>
+      </symbol>
+      <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+      </symbol>
+      <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 6 9 17l-5-5"/>
+      </symbol>
+      <symbol id="i-palette" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z"/>
+        <circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <main class="app">
+    <header class="topbar">
+      <div class="logo" aria-hidden="true"><svg width="24" height="24"><use href="#i-plate"/></svg></div>
+      <h1>Receitas por orçamento<small>Com preços do Continente</small></h1>
+      <div class="theme-menu">
+        <button type="button" id="theme-btn" class="icobtn" aria-label="Escolher tema" aria-haspopup="menu" aria-expanded="false" aria-controls="theme-pop">
+          <svg width="24" height="24" aria-hidden="true"><use href="#i-palette"/></svg>
+        </button>
+        <div id="theme-pop" class="popover" role="menu" aria-label="Tema" hidden></div>
       </div>
-    </div>
+      <div id="session" class="session" hidden>
+        <span id="who" class="badge"></span>
+        <button type="button" id="logout" class="btn small">Sair</button>
+      </div>
+    </header>
     <p id="mode-banner" class="notice" hidden></p>
 
     <section id="login-view" hidden>
       <p class="sub">Inicia sessão para continuar.</p>
       <form id="login-form" class="login">
-        <label>Email
+        <label class="field"><span>Email</span>
           <input name="email" type="email" autocomplete="username" autocapitalize="none" spellcheck="false" required>
         </label>
-        <label>Palavra-passe
+        <label class="field"><span>Palavra-passe</span>
           <input name="password" type="password" autocomplete="current-password" required>
         </label>
-        <button type="submit">Entrar</button>
+        <button type="submit" class="btn primary">Entrar</button>
         <p id="login-error" class="error" role="alert" hidden></p>
       </form>
     </section>
@@ -38,66 +81,82 @@
     <section id="app-view" hidden>
       <p class="sub">Diz quanto queres gastar esta semana e sugerimos refeições com os produtos do supermercado.</p>
 
-      <form id="form">
-        <label>Orçamento semanal (€)
-          <input name="budget" type="number" min="1" step="0.5" value="30" required>
-        </label>
-        <label>Refeições
-          <input name="meals" type="number" min="1" max="21" value="7" required>
-        </label>
-        <label>Pessoas
-          <input name="people" type="number" min="1" max="12" value="2" required>
-        </label>
-        <label class="check"><input name="vegetarian" type="checkbox"> Só vegetariano</label>
-        <label class="check"><input name="balance" type="checkbox" checked> Variar carne, peixe e vegetariano</label>
-        <p id="updated" class="muted prices-note"></p>
+      <div class="layout">
+        <form id="form" class="card form">
+          <div class="fields">
+            <label class="field"><span>Orçamento</span>
+              <span class="value"><input name="budget" type="number" inputmode="decimal" min="1" step="0.5" value="30" required><span class="unit">€</span></span>
+            </label>
+            <label class="field"><span>Refeições</span>
+              <span class="value"><input name="meals" type="number" inputmode="numeric" min="1" max="21" value="7" required></span>
+            </label>
+            <label class="field"><span>Pessoas</span>
+              <span class="value"><input name="people" type="number" inputmode="numeric" min="1" max="12" value="2" required></span>
+            </label>
+          </div>
+          <div class="toggles">
+            <label class="chip"><input name="vegetarian" type="checkbox"> Só vegetariano</label>
+            <label class="chip"><input name="balance" type="checkbox" checked> Variar carne, peixe e vegetariano</label>
+          </div>
+          <p id="updated" class="muted prices-note"></p>
 
-        <details id="prefs" class="prefs" hidden>
-          <summary>Preferências</summary>
-          <fieldset>
-            <legend>Já tenho em casa</legend>
-            <p class="muted">O que marcares não entra no custo nem na lista de compras.</p>
-            <div id="pantry" class="chips"></div>
-          </fieldset>
-          <fieldset>
-            <legend>Evitar</legend>
-            <div id="avoid" class="chips"></div>
-            <p class="muted">Indicativo: confirma sempre nos rótulos dos produtos.</p>
-          </fieldset>
-        </details>
+          <details id="prefs" class="prefs" hidden>
+            <summary>Preferências</summary>
+            <fieldset>
+              <legend>Já tenho em casa</legend>
+              <p class="muted">O que marcares não entra no custo nem na lista de compras.</p>
+              <div id="pantry" class="chips"></div>
+            </fieldset>
+            <fieldset>
+              <legend>Evitar</legend>
+              <div id="avoid" class="chips"></div>
+              <p class="muted">Indicativo: confirma sempre nos rótulos dos produtos.</p>
+            </fieldset>
+          </details>
 
-        <div class="actions">
-          <button type="submit">Sugerir plano</button>
-          <button type="button" id="again" class="secondary" hidden>Outra sugestão</button>
-          <button type="button" id="show-last" class="secondary">Mostrar plano</button>
-        </div>
-      </form>
+          <div class="actions">
+            <button type="submit" class="btn primary">Sugerir plano</button>
+            <button type="button" id="again" class="btn" hidden>Outra sugestão</button>
+            <button type="button" id="show-last" class="btn">Mostrar plano</button>
+          </div>
+        </form>
 
-      <section id="result" hidden>
-        <p id="notice" class="notice" hidden></p>
-        <div id="summary" class="summary"></div>
-        <div id="warnings"></div>
-        <h2>Refeições</h2>
-        <p class="muted">Assume que tens azeite, sal e pimenta em casa. Clica numa refeição para ver os passos, usa <b>Fixar</b> para a manter em "Outra sugestão" ou <b>Trocar</b> para a substituir.</p>
-        <ol id="meals"></ol>
-        <h2>Lista de compras</h2>
-        <p id="cart-progress" class="muted"></p>
-        <p id="at-home" class="muted" hidden></p>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th class="check-col"><span class="sr-only">No carrinho</span></th>
-                <th>Produto</th><th>Emb.</th><th class="num">Custo</th><th class="num">Sobra</th>
-              </tr>
-            </thead>
-            <tbody id="shopping"></tbody>
-          </table>
-        </div>
-      </section>
-      <p id="error" class="error" hidden></p>
+        <p id="error" hidden></p>
 
-      <section id="admin" class="admin" hidden>
+        <section id="result" hidden>
+          <div id="hero-col">
+            <div class="card hero">
+              <div class="eyebrow">Custo do cabaz</div>
+              <div id="hero-total" class="big"></div>
+              <div id="hero-of" class="of"></div>
+              <div class="bar" aria-hidden="true"><i id="hero-fill"></i></div>
+              <div id="hero-meta" class="meta"></div>
+            </div>
+            <p id="notice" class="notice" hidden></p>
+            <div id="warnings"></div>
+          </div>
+
+          <div id="plan-main">
+            <div class="sectionhead">
+              <h2>Refeições</h2>
+              <span class="muted">Assume azeite, sal e pimenta em casa</span>
+            </div>
+            <ul id="meals" class="meals"></ul>
+
+            <div class="sectionhead">
+              <h2>Lista de compras</h2>
+              <span id="at-home" class="muted" hidden></span>
+            </div>
+            <div id="shopping" class="card shop"></div>
+            <div id="cartbar" class="cartbar" aria-live="polite">
+              <div class="top"><span id="cart-n"></span><b id="cart-t"></b></div>
+              <div class="bar" aria-hidden="true"><i id="cart-fill"></i></div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <section id="admin" class="card admin" hidden>
         <h2>Administração</h2>
         <p id="admin-status" class="muted"></p>
         <p class="muted">Os preços são atualizados por um script local. Os utilizadores gerem-se na consola do Firebase, em Authentication.</p>

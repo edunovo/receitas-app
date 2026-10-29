@@ -1,6 +1,7 @@
 import { LAST_USER_KEY, PRICES_KEY, createBackend, isConfigured, readJson, rememberUser, writeJson } from "./backend.js";
-import { PlanError, makePlan } from "./planner.js";
+import { PlanError, category, makePlan } from "./planner.js";
 import { catalogStatus } from "./status.js";
+import { initThemeMenu } from "./theme.js";
 
 const $ = (id) => document.getElementById(id);
 const eur = (n) => n.toLocaleString("pt-PT", { style: "currency", currency: "EUR" });
@@ -26,9 +27,25 @@ function el(tag, text, className) {
   return node;
 }
 
-function button(text, onClick, className = "secondary small") {
-  const node = el("button", text, className);
+const SVG = "http://www.w3.org/2000/svg";
+
+function icon(name, size = 22) {
+  const svg = document.createElementNS(SVG, "svg");
+  svg.setAttribute("width", size);
+  svg.setAttribute("height", size);
+  svg.setAttribute("aria-hidden", "true");
+  const use = document.createElementNS(SVG, "use");
+  use.setAttribute("href", `#i-${name}`);
+  svg.append(use);
+  return svg;
+}
+
+function iconButton(name, label, onClick) {
+  const node = el("button", undefined, "icobtn");
   node.type = "button";
+  node.setAttribute("aria-label", label);
+  node.title = label;
+  node.append(icon(name));
   node.addEventListener("click", onClick);
   return node;
 }
@@ -75,7 +92,7 @@ function clearResult() {
   $("result").hidden = true;
   $("again").hidden = true;
   showError(null);
-  for (const id of ["summary", "warnings", "meals", "shopping"]) $(id).replaceChildren();
+  for (const id of ["hero-meta", "warnings", "meals", "shopping"]) $(id).replaceChildren();
 }
 
 function showLogin() {
@@ -274,37 +291,45 @@ function restoreForm(request) {
   f.balance.checked = request.balance;
 }
 
-function summaryCard(value, label) {
-  const box = el("div");
-  box.append(el("b", value), el("span", label));
-  return box;
-}
+// A cor e a etiqueta de cada refeição vêm do tipo de proteína (o mesmo critério do planeador).
+const KIND = { carne: ["carne", "Carne"], peixe: ["peixe", "Peixe"], vegetariana: ["veg", "Vegetariana"] };
 
 function mealItem(meal) {
-  const li = el("li");
-  const details = el("details");
-  const summary = el("summary", meal.title);
-  summary.append(el("small", `${meal.minutes} min`));
-  const steps = el("ol", undefined, "steps");
-  steps.append(...meal.steps.map((s) => el("li", s)));
-  details.append(summary, steps);
+  const [kind, kindLabel] = KIND[category(meal)];
+  const li = el("li", undefined, "meal");
+  li.dataset.k = kind;
 
-  const pin = button("", () => {
+  const sub = el("div", undefined, "sub");
+  const clock = el("span");
+  clock.style.cssText = "display:inline-flex;align-items:center;gap:4px";
+  clock.append(icon("clock", 14), document.createTextNode(`${meal.minutes} min`));
+  sub.append(el("span", kindLabel, "tag"), clock);
+  const text = el("div", undefined, "txt");
+  text.append(el("div", meal.title, "name"), sub);
+
+  const pin = iconButton("pin", `Fixar ${meal.title}`, () => {
     if (fixed.has(meal.recipe_id)) fixed.delete(meal.recipe_id);
     else fixed.add(meal.recipe_id);
     paintPin();
   });
   const paintPin = () => {
     const on = fixed.has(meal.recipe_id);
-    pin.textContent = on ? "Fixada" : "Fixar";
     pin.setAttribute("aria-pressed", String(on));
-    pin.classList.toggle("on", on);
+    pin.title = on ? "Fixada: fica na próxima sugestão" : "Fixar para a manter na próxima sugestão";
   };
   paintPin();
+  const swap = iconButton("swap", `Trocar ${meal.title}`, () => swapMeal(meal.recipe_id));
+  swap.title = "Trocar por outra refeição";
 
-  const actions = el("div", undefined, "meal-actions");
-  actions.append(pin, button("Trocar", () => swapMeal(meal.recipe_id)));
-  li.append(details, actions);
+  const main = el("div", undefined, "meal-main");
+  main.append(text, pin, swap);
+
+  const steps = el("ol", undefined, "steps");
+  steps.append(...meal.steps.map((s) => el("li", s)));
+  const details = el("details", undefined, "steps-box");
+  details.append(el("summary", "Ver passos"), steps);
+
+  li.append(main, details);
   return li;
 }
 
@@ -333,73 +358,77 @@ function renderShopping(plan) {
   const saved = readJson(CART_KEY);
   const cart = new Set(saved?.signature === signature ? saved.ids : []);
 
+  const total = plan.shopping_list.length;
+  const costById = new Map(plan.shopping_list.map((item) => [item.product_id, item.cost]));
   const updateProgress = () => {
-    const total = plan.shopping_list.length;
-    $("cart-progress").textContent = total
-      ? `${cart.size} de ${total} no carrinho`
-      : "Não há nada para comprar: já tens tudo em casa.";
+    const inCart = [...cart].reduce((sum, id) => sum + (costById.get(id) ?? 0), 0);
+    $("cart-n").textContent = total ? `${cart.size} de ${total} no carrinho` : "Não há nada para comprar: já tens tudo em casa.";
+    $("cart-t").textContent = total ? eur(inCart) : "";
+    $("cart-fill").style.width = total ? `${(cart.size / total) * 100}%` : "0%";
   };
 
   const items = orderBySection(plan.shopping_list);
   const hasSections = items.some((item) => item.section);
+  const sectionTotal = (section) => items.filter((i) => i.section === section).reduce((sum, i) => sum + i.cost, 0);
   $("shopping").replaceChildren(
     ...items.flatMap((item, index) => {
       const header = [];
       if (hasSections && item.section !== items[index - 1]?.section) {
-        const title = el("th", item.section ?? "Outros");
-        title.colSpan = 5;
-        const sectionRow = el("tr", undefined, "section-row");
-        sectionRow.append(title);
-        header.push(sectionRow);
+        const title = el("h3", undefined, "sec");
+        title.append(el("span", item.section ?? "Outros"), el("span", eur(sectionTotal(item.section))));
+        header.push(title);
       }
-      const row = el("tr");
-      const box = document.createElement("input");
-      box.type = "checkbox";
-      box.checked = cart.has(item.product_id);
-      box.setAttribute("aria-label", `No carrinho: ${item.product_name}`);
-      const paint = () => row.classList.toggle("done", box.checked);
-      box.addEventListener("change", () => {
-        if (box.checked) cart.add(item.product_id);
+      // Toda a linha é um <label>: tocar em qualquer ponto marca o produto.
+      const row = el("label", undefined, "row");
+      const input = el("input", undefined, "sr-only");
+      input.type = "checkbox";
+      input.checked = cart.has(item.product_id);
+      const paint = () => row.classList.toggle("done", input.checked);
+      input.addEventListener("change", () => {
+        if (input.checked) cart.add(item.product_id);
         else cart.delete(item.product_id);
         paint();
         writeJson(CART_KEY, { signature, ids: [...cart] });
         updateProgress();
       });
-      // Toda a linha é uma zona de toque, não só a caixa.
-      row.addEventListener("click", (e) => {
-        if (e.target === box) return;
-        box.checked = !box.checked;
-        box.dispatchEvent(new Event("change"));
-      });
-      const check = el("td", undefined, "check-col");
-      check.append(box);
-      row.append(
-        check,
-        el("td", item.product_name),
-        el("td", `${item.packs}×`),
-        el("td", eur(item.cost), "num"),
-        el("td", `${item.leftover_qty} ${item.unit}`, "num"),
-      );
+      const box = el("span", undefined, "box");
+      box.append(icon("check", 16));
+      const name = el("span", item.product_name, "nm");
+      const detail = `${item.packs}×${item.leftover_qty > 0 ? ` · sobram ${item.leftover_qty} ${item.unit}` : ""}`;
+      name.append(el("small", detail));
+      row.append(input, box, name, el("span", eur(item.cost), "pr"));
       paint();
       return [...header, row];
     }),
   );
+  $("cartbar").hidden = !total;
   updateProgress();
+  if (!total) $("shopping").replaceChildren(el("p", "Não há nada para comprar: já tens tudo em casa.", "muted"));
 
   const atHome = plan.at_home ?? [];
-  $("at-home").textContent = atHome.length ? `Já tens em casa: ${atHome.join(", ")}.` : "";
+  $("at-home").textContent = atHome.length ? `Já tens em casa: ${atHome.join(", ")}` : "";
   $("at-home").hidden = !atHome.length;
+}
+
+function renderHero(plan) {
+  $("hero-total").textContent = eur(plan.total_cost);
+  $("hero-of").textContent = `de ${eur(plan.budget)} de orçamento`;
+  $("hero-fill").style.width = `${plan.budget > 0 ? Math.min(100, (plan.total_cost / plan.budget) * 100) : 0}%`;
+
+  const meals = el("span");
+  meals.append(el("b", String(plan.meals.length)), document.createTextNode(plan.meals.length === 1 ? " refeição" : " refeições"));
+  // Os planos guardados antes de existir este campo não dizem para quantas pessoas eram.
+  if (plan.people) meals.append(document.createTextNode(` · ${plan.people} ${plan.people === 1 ? "pessoa" : "pessoas"}`));
+  const left = el("span");
+  left.append(document.createTextNode("sobra "), el("b", eur(plan.remaining)));
+  $("hero-meta").replaceChildren(meals, left);
 }
 
 function render(plan) {
   lastPlan = plan;
   fixed = new Set([...fixed].filter((id) => plan.meals.some((m) => m.recipe_id === id)));
 
-  $("summary").replaceChildren(
-    summaryCard(eur(plan.total_cost), "custo do cabaz"),
-    summaryCard(eur(plan.budget), "orçamento"),
-    summaryCard(eur(plan.remaining), "sobra"),
-  );
+  renderHero(plan);
   $("warnings").replaceChildren(...plan.warnings.map((w) => el("div", w, "warn")));
   $("meals").replaceChildren(...plan.meals.map(mealItem));
   renderShopping(plan);
@@ -547,6 +576,7 @@ $("catalog-box").addEventListener("toggle", () => {
 // --- arranque ----------------------------------------------------------------------------------
 
 async function init() {
+  initThemeMenu();
   backend = await createBackend();
   showBanner();
   backend.onUser(handleUser);

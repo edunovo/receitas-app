@@ -57,6 +57,10 @@ test("o plano nunca ultrapassa o orçamento", () => {
   }
 });
 
+test("o plano diz para quantas pessoas é (a interface mostra-o)", () => {
+  assert.equal(planWeek({ recipes, products, ...base, people: 3 }).people, 3);
+});
+
 test("o custo da lista de compras bate certo com o total", () => {
   const plan = planWeek({ recipes, products, ...base, budget: 40 });
   const sum = plan.shopping_list.reduce((acc, item) => acc + item.cost, 0);
