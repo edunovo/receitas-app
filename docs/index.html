@@ -40,6 +40,12 @@
       <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
         <path d="M20 6 9 17l-5-5"/>
       </symbol>
+      <symbol id="i-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+      </symbol>
+      <symbol id="i-ban" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/>
+      </symbol>
       <symbol id="i-palette" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z"/>
         <circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/>
@@ -96,6 +102,7 @@
           </div>
           <div class="toggles">
             <label class="chip"><input name="balance" type="checkbox" checked> Variar carne e peixe</label>
+            <label class="chip"><input name="variety" type="checkbox" checked> Mais variedade</label>
           </div>
           <p id="updated" class="muted prices-note"></p>
 
@@ -105,6 +112,23 @@
               <legend>Já tenho em casa</legend>
               <p class="muted">O que marcares não entra no custo nem na lista de compras.</p>
               <div id="pantry" class="chips"></div>
+            </fieldset>
+            <fieldset>
+              <legend>Meta de calorias</legend>
+              <label class="field"><span>Por refeição, por pessoa</span>
+                <span class="value"><input id="kcal-target" type="number" inputmode="numeric" min="200" max="3000" step="50" placeholder="sem meta"><span class="unit">kcal</span></span>
+              </label>
+              <p class="muted">Um almoço ou jantar costuma ter 500 a 800 kcal. O plano mostra a média e se fica perto da tua meta.</p>
+            </fieldset>
+            <fieldset>
+              <legend>Receitas favoritas</legend>
+              <div id="favorites" class="chips"></div>
+              <p class="muted">Saem mais vezes nos planos. Marca-as dentro de cada refeição.</p>
+            </fieldset>
+            <fieldset>
+              <legend>Receitas que não quero</legend>
+              <div id="dislikes" class="chips"></div>
+              <p class="muted">Nunca são sugeridas. Toca para voltar a aceitar.</p>
             </fieldset>
             <fieldset>
               <legend>Evitar</legend>
@@ -130,6 +154,7 @@
               <div id="hero-of" class="of"></div>
               <div class="bar" aria-hidden="true"><i id="hero-fill"></i></div>
               <div id="hero-meta" class="meta"></div>
+              <p id="hero-kcal" class="kcal" hidden></p>
             </div>
             <p id="notice" class="notice" hidden></p>
             <div id="warnings"></div>

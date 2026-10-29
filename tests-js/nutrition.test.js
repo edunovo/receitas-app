@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 
-import { kcalPerPerson, mealDetails, scaledIngredients } from "../docs/js/nutrition.js";
+import { kcalPerPerson, kcalSummary, mealDetails, scaledIngredients } from "../docs/js/nutrition.js";
 import { makePlan } from "../docs/js/planner.js";
 
 const load = (name) => JSON.parse(readFileSync(new URL(`../docs/data/${name}`, import.meta.url), "utf8"));
@@ -69,4 +69,16 @@ test("os detalhes de uma refeição calculam-se pelo id, também para planos gua
 
 test("uma receita que já não existe não rebenta: não há detalhes para mostrar", () => {
   assert.equal(mealDetails("lentilhas-estufadas", 2, { recipes, ingredients: catalog }, new Set()), null);
+});
+
+test("o resumo de calorias compara a média do plano com a meta, com 15 % de margem", () => {
+  assert.equal(kcalSummary([], 600), null);
+  assert.equal(kcalSummary([null, null], 600), null);
+  assert.deepEqual(kcalSummary([500, 550, null], null), { average: 530, target: null, status: null });
+  assert.equal(kcalSummary([600, 600], 600).status, "perto");
+  assert.equal(kcalSummary([680, 680], 600).status, "perto"); // +13 %
+  assert.equal(kcalSummary([700, 700], 600).status, "acima"); // +17 %
+  assert.equal(kcalSummary([500, 500], 600).status, "abaixo"); // −17 %
+  assert.equal(kcalSummary([510, 510], 600).status, "perto"); // −15 %
+  assert.equal(kcalSummary([500, 500], 0).status, null); // meta vazia: sem comparação
 });

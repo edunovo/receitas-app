@@ -215,3 +215,39 @@ test("pedidos inválidos são recusados", () => {
     assert.throws(() => makePlan({ ...base, ...bad }, data), PlanError);
   }
 });
+
+// --- variedade, favoritas e "nunca mais sugerir" ----------------------------------------------------
+
+const seeds = Array.from({ length: 30 }, (_, i) => i);
+const planFor = (seed, extra = {}) => makePlan({ ...base, budget: 60, meals: 7, seed, ...extra }, data);
+
+test("com variedade saem mais receitas diferentes, sem passar o orçamento nem perder refeições", () => {
+  const distinct = (variety) => new Set(seeds.flatMap((seed) => ids(planFor(seed, { variety })))).size;
+  assert.ok(distinct(true) >= distinct(false) * 1.5, "a variedade quase não mudou o leque de receitas");
+  for (const seed of seeds) {
+    const cheap = planFor(seed);
+    const varied = planFor(seed, { variety: true });
+    assert.ok(varied.total_cost <= 60);
+    assert.ok(varied.meals.length >= cheap.meals.length);
+  }
+});
+
+test("com variedade, a mesma semente dá o mesmo plano", () => {
+  assert.deepEqual(planFor(5, { variety: true }), planFor(5, { variety: true }));
+});
+
+test("as receitas marcadas como 'nunca mais sugerir' não saem, nem a trocar nem com variedade", () => {
+  const dislikes = ["arroz-atum", "arroz-frango", "massa-atum", "salmao-forno", "pescada-forno", "inventada"];
+  for (const variety of [false, true]) {
+    for (const seed of seeds) {
+      const plan = planFor(seed, { dislikes, variety, meals: 10 });
+      assert.ok(ids(plan).every((id) => !dislikes.includes(id)), `saiu uma receita rejeitada (semente ${seed})`);
+    }
+  }
+});
+
+test("as favoritas saem mais vezes", () => {
+  const favorites = ["bife-vaca-arroz-brocolos", "arroz-camarao"];
+  const count = (extra) => seeds.filter((seed) => ids(planFor(seed, { variety: true, ...extra })).some((id) => favorites.includes(id))).length;
+  assert.ok(count({ favorites }) > count({}), `${count({ favorites })} planos com favoritas contra ${count({})} sem`);
+});

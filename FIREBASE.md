@@ -26,7 +26,7 @@ local dos preços e `users/{uid}` cria-o a app quando alguém guarda um plano ou
 | Documento | Campos |
 |---|---|
 | `prices/continente` | `fetched_at`, `products` (lista com `id`, `name`, `price`, `pack_qty`, `unit`, `ingredient`, `section`), `errors`, `links` |
-| `users/{uid}` | `settings` (`pantry`, `avoid`), `lastPlan` (`request`, `plan`, `savedAt`) |
+| `users/{uid}` | `settings` (`pantry`, `avoid`, `dislikes`, `favorites`, `kcalTarget`), `lastPlan` (`request`, `plan`, `savedAt`) |
 | `members/{uid}` | um campo qualquer (por exemplo `member: true`); conta a existência do documento |
 | `admins/{uid}` | um campo qualquer (por exemplo `admin: true`); conta a existência do documento |
 

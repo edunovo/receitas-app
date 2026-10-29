@@ -44,6 +44,16 @@ test("o documento de cada utilizador exige ser membro e ser o próprio", () => {
   assert.match(users, /allow delete: if false;/);
 });
 
+test("as preferências só aceitam os campos que a app usa, com limites", () => {
+  const users = block("/users/{uid}");
+  assert.match(users, /settings\.keys\(\)\.hasOnly\(\['pantry', 'avoid', 'dislikes', 'favorites', 'kcalTarget'\]\)/);
+  assert.match(users, /dislikes\.size\(\) <= 200/);
+  assert.match(users, /favorites\.size\(\) <= 200/);
+  assert.match(users, /kcalTarget is number/);
+  assert.match(users, /kcalTarget >= 200/);
+  assert.match(users, /kcalTarget <= 3000/);
+});
+
 test("members e admins só se leem o próprio e a app nunca escreve", () => {
   for (const path of ["/members/{uid}", "/admins/{uid}"]) {
     const part = block(path);

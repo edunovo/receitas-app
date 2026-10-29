@@ -1,5 +1,5 @@
 import { LAST_USER_KEY, PRICES_KEY, createBackend, isConfigured, readJson, rememberUser, writeJson } from "./backend.js";
-import { mealDetails } from "./nutrition.js";
+import { kcalSummary, mealDetails } from "./nutrition.js";
 import { PlanError, category, makePlan } from "./planner.js";
 import { catalogStatus } from "./status.js";
 import { initThemeMenu } from "./theme.js";
@@ -19,6 +19,10 @@ let ingredients = null;
 let prices = null; // documento de preços: { fetched_at, products, errors, links }
 let lastPlan = null; // plano que está no ecrã
 let fixed = new Set(); // receitas fixadas pelo utilizador
+// Preferências que ficam guardadas por utilizador (junto com "já tenho em casa" e "evitar").
+const prefsState = { favorites: new Set(), dislikes: new Set(), kcalTarget: null };
+const KCAL_MIN = 200; // os mesmos limites que firestore.rules aceita
+const KCAL_MAX = 3000;
 let userToken = 0; // descarta respostas de um utilizador que entretanto saiu
 
 function el(tag, text, className) {
@@ -39,6 +43,14 @@ function icon(name, size = 22) {
   use.setAttribute("href", `#i-${name}`);
   svg.append(use);
   return svg;
+}
+
+function textButton(iconName, text, onClick) {
+  const node = el("button", undefined, "btn small");
+  node.type = "button";
+  node.append(icon(iconName, 18), document.createTextNode(` ${text}`));
+  node.addEventListener("click", onClick);
+  return node;
 }
 
 function iconButton(name, label, onClick) {
@@ -94,6 +106,7 @@ function clearResult() {
   $("again").hidden = true;
   showError(null);
   for (const id of ["hero-meta", "warnings", "meals", "shopping"]) $(id).replaceChildren();
+  $("hero-kcal").hidden = true;
 }
 
 function showLogin() {
@@ -226,14 +239,58 @@ function buildChips(box, items, selected) {
       input.type = "checkbox";
       input.value = item.key;
       input.checked = selected.has(item.key);
-      input.addEventListener("change", () => {
-        clearTimeout(prefsTimer);
-        prefsTimer = setTimeout(savePrefs, 600); // guarda pouco depois da última alteração
-      });
+      input.addEventListener("change", schedulePrefsSave);
       label.append(input, document.createTextNode(` ${item.label}`));
       return label;
     }),
   );
+}
+
+// Guarda pouco depois da última alteração.
+function schedulePrefsSave() {
+  clearTimeout(prefsTimer);
+  prefsTimer = setTimeout(savePrefs, 600);
+}
+
+const recipeTitle = (id) => recipes.find((r) => r.id === id)?.title;
+
+// Receitas favoritas e rejeitadas: uma etiqueta por receita; desmarcar tira-a da lista.
+function renderRecipeLists() {
+  for (const [boxId, ids] of [
+    ["favorites", prefsState.favorites],
+    ["dislikes", prefsState.dislikes],
+  ]) {
+    const box = $(boxId);
+    const known = [...ids].filter(recipeTitle);
+    if (!known.length) {
+      box.replaceChildren(el("span", "Nenhuma por agora.", "muted"));
+      continue;
+    }
+    box.replaceChildren(
+      ...known.map((id) => {
+        const label = el("label", undefined, "chip");
+        const input = document.createElement("input");
+        input.type = "checkbox";
+        input.checked = true;
+        input.addEventListener("change", () => {
+          ids.delete(id);
+          renderRecipeLists();
+          paintFavoriteButtons();
+          schedulePrefsSave();
+        });
+        label.append(input, document.createTextNode(` ${recipeTitle(id)}`));
+        return label;
+      }),
+    );
+  }
+}
+
+function paintFavoriteButtons() {
+  for (const button of document.querySelectorAll("#meals .fav")) {
+    const on = prefsState.favorites.has(button.dataset.id);
+    button.setAttribute("aria-pressed", String(on));
+    button.lastChild.textContent = on ? " Favorita" : " Adicionar às favoritas";
+  }
 }
 
 const usedIngredients = { has: (key) => recipes.some((r) => r.ingredients.some((i) => i.ingredient === key)) };
@@ -258,16 +315,35 @@ async function loadPrefs() {
     Object.entries(ingredients.allergens).map(([key, name]) => ({ key, label: name })),
     new Set(settings?.avoid ?? []),
   );
+  prefsState.favorites = new Set(settings?.favorites ?? []);
+  prefsState.dislikes = new Set(settings?.dislikes ?? []);
+  prefsState.kcalTarget = Number.isFinite(settings?.kcalTarget) ? settings.kcalTarget : null;
+  $("kcal-target").value = prefsState.kcalTarget ?? "";
+  renderRecipeLists();
   $("prefs").hidden = false;
 }
 
 function savePrefs() {
   backend
-    .saveSettings(currentUser, { pantry: checkedValues($("pantry")), avoid: checkedValues($("avoid")) })
+    .saveSettings(currentUser, {
+      pantry: checkedValues($("pantry")),
+      avoid: checkedValues($("avoid")),
+      dislikes: [...prefsState.dislikes],
+      favorites: [...prefsState.favorites],
+      kcalTarget: prefsState.kcalTarget, // null sem meta: o Firestore junta campos, por isso tem de ir explícito
+    })
     .catch(() => {
       /* sem rede: as marcas ficam no ecrã mas não são guardadas */
     });
 }
+
+$("kcal-target").addEventListener("input", () => {
+  // Fora dos limites conta como "sem meta": as regras do Firestore recusariam o resto das preferências.
+  const value = Math.round(Number($("kcal-target").value));
+  prefsState.kcalTarget = $("kcal-target").value !== "" && value >= KCAL_MIN && value <= KCAL_MAX ? value : null;
+  if (lastPlan) renderKcal(lastKcal);
+  schedulePrefsSave();
+});
 
 // --- planeador ---------------------------------------------------------------------------------
 
@@ -282,6 +358,9 @@ function buildRequest(seed, extra = {}) {
     balance: f.balance.checked,
     have: checkedValues($("pantry")),
     avoid: checkedValues($("avoid")),
+    dislikes: [...prefsState.dislikes],
+    favorites: [...prefsState.favorites],
+    variety: f.variety.checked,
     seed,
     ...extra,
   };
@@ -293,6 +372,7 @@ function restoreForm(request) {
   f.meals.value = request.meals;
   f.people.value = request.people;
   f.balance.checked = request.balance;
+  f.variety.checked = request.variety ?? f.variety.checked; // planos antigos não dizem; fica como está
 }
 
 // A cor e a etiqueta de cada refeição vêm do tipo de proteína (o mesmo critério do planeador).
@@ -348,6 +428,21 @@ function mealItem(meal, info) {
     details.append(el("h4", "Passos"));
   }
   details.append(steps);
+
+  const favorite = textButton("heart", "Adicionar às favoritas", () => {
+    if (prefsState.favorites.has(meal.recipe_id)) prefsState.favorites.delete(meal.recipe_id);
+    else prefsState.favorites.add(meal.recipe_id);
+    paintFavoriteButtons();
+    renderRecipeLists();
+    schedulePrefsSave();
+  });
+  favorite.classList.add("fav");
+  favorite.dataset.id = meal.recipe_id;
+  const never = textButton("ban", "Nunca mais sugerir", () => dislikeMeal(meal));
+  const prefsRow = el("div", undefined, "meal-prefs");
+  prefsRow.append(favorite, never);
+  // Só para receitas que ainda existem: nos planos antigos pode haver pratos já retirados.
+  if (recipeTitle(meal.recipe_id)) details.append(prefsRow);
 
   li.append(main, details);
   return li;
@@ -444,6 +539,18 @@ function renderHero(plan) {
   $("hero-meta").replaceChildren(meals, left);
 }
 
+let lastKcal = [];
+
+function renderKcal(perMeal) {
+  const summary = kcalSummary(perMeal, prefsState.kcalTarget);
+  const box = $("hero-kcal");
+  box.hidden = !summary;
+  if (!summary) return;
+  const verdict = { perto: "perto da meta", acima: "acima da meta", abaixo: "abaixo da meta" }[summary.status];
+  box.textContent = `≈ ${summary.average} kcal por refeição, em média${verdict ? ` · ${verdict} de ${summary.target}` : ""}`;
+  box.className = `kcal${summary.status && summary.status !== "perto" ? " off" : ""}`;
+}
+
 function render(plan) {
   lastPlan = plan;
   fixed = new Set([...fixed].filter((id) => plan.meals.some((m) => m.recipe_id === id)));
@@ -453,9 +560,11 @@ function render(plan) {
   // As calorias e os ingredientes calculam-se agora, por isso aparecem também em planos guardados há mais tempo.
   const people = plan.people ?? Number($("form").people.value);
   const have = new Set(checkedValues($("pantry")));
-  $("meals").replaceChildren(
-    ...plan.meals.map((meal) => mealItem(meal, mealDetails(meal.recipe_id, people, { recipes, ingredients }, have))),
-  );
+  const details = plan.meals.map((meal) => mealDetails(meal.recipe_id, people, { recipes, ingredients }, have));
+  $("meals").replaceChildren(...plan.meals.map((meal, index) => mealItem(meal, details[index])));
+  paintFavoriteButtons();
+  lastKcal = details.map((info) => info?.kcal ?? null);
+  renderKcal(lastKcal);
   renderShopping(plan);
   $("result").hidden = false;
   $("again").hidden = false;
@@ -496,7 +605,18 @@ async function run(seed, extra = {}) {
 async function swapMeal(recipeId) {
   if (!lastPlan) return;
   const others = lastPlan.meals.map((m) => m.recipe_id).filter((id) => id !== recipeId);
-  await run(randomSeed(), { locked: others, exclude: [recipeId], strict: true, meals: lastPlan.meals.length });
+  return run(randomSeed(), { locked: others, exclude: [recipeId], strict: true, meals: lastPlan.meals.length });
+}
+
+// "Nunca mais sugerir": guarda a receita como rejeitada e troca-a já por outra.
+async function dislikeMeal(meal) {
+  prefsState.dislikes.add(meal.recipe_id);
+  prefsState.favorites.delete(meal.recipe_id);
+  renderRecipeLists();
+  schedulePrefsSave();
+  if (await swapMeal(meal.recipe_id)) {
+    setNotice(`Plano guardado. «${meal.title}» não volta a ser sugerida; podes desfazer em Preferências.`);
+  }
 }
 
 // "Mostrar plano": o último plano guardado para este utilizador.

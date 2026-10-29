@@ -14,6 +14,19 @@ const round2 = (x) => Math.round((x + Number.EPSILON) * 100) / 100;
 
 export class PlanError extends Error {}
 
+const FAVORITE_FACTOR = 0.75; // as favoritas pesam como se custassem 25 % menos
+const SPREAD_MARGIN = 0.6; // € de folga no sorteio, para um custo marginal perto de zero não reduzir as hipóteses a uma
+const SPREAD_ATTEMPTS = 8;
+const DEFAULT_SPREAD = 0.6; // até 60 % mais caro que a melhor opção do momento
+
+/** Sorteia entre as opções quase tão baratas como a melhor (até `spread` acima, mais uma folga fixa); as favoritas contam a triplicar. */
+function pickAmongCheapest(options, spread, random) {
+  const cheapest = Math.min(...options.map((o) => o.score));
+  const pool = options.filter((o) => o.score <= cheapest * (1 + spread) + SPREAD_MARGIN);
+  const tickets = pool.flatMap((o) => (o.favorite ? [o, o, o] : [o]));
+  return tickets[Math.floor(random() * tickets.length)];
+}
+
 // Gerador pseudo-aleatório com semente (mulberry32): a mesma semente dá sempre o mesmo plano.
 function seededRandom(seed) {
   let state = seed >>> 0;
@@ -116,6 +129,8 @@ export function planWeek({
   exclude = new Set(),
   seed = 0,
   variety = 0.3,
+  spread = 0,
+  favorites = new Set(),
 }) {
   const catalog = new Catalog(products);
   const random = seededRandom(seed);
@@ -166,16 +181,22 @@ export function planWeek({
 
     let best = null;
     for (const wanted of order) {
+      const options = [];
       for (const recipe of candidates) {
         if (used(recipe) >= maxRepeat || (wanted && category(recipe) !== wanted)) continue;
         const newNeeds = merge(needs, recipeNeeds(recipe, people, have));
         const newCost = catalog.basketCost(newNeeds);
         if (newCost > budget + EPS) continue;
-        // custo marginal com uma pequena variação para não sair sempre o mesmo plano
-        const score = (newCost - currentCost) * (1 + random() * variety);
-        if (!best || score < best.score) best = { score, recipe, newNeeds, newCost };
+        // custo marginal com uma pequena variação para não sair sempre o mesmo plano;
+        // as favoritas "custam" um pouco menos, por isso saem mais vezes
+        const favorite = favorites.has(recipe.id);
+        const score = (newCost - currentCost) * (1 + random() * variety) * (favorite ? FAVORITE_FACTOR : 1);
+        options.push({ score, recipe, newNeeds, newCost, favorite });
       }
-      if (best) break;
+      if (options.length) {
+        best = spread > 0 ? pickAmongCheapest(options, spread, random) : options.reduce((a, b) => (b.score < a.score ? b : a));
+        break;
+      }
     }
     if (!best) break;
     chosen.push(best.recipe);
@@ -239,8 +260,11 @@ export function makePlan(request, { recipes, products, ingredients }) {
   const avoid = new Set((request.avoid ?? []).filter((a) => a in ingredients.allergens));
   const allowed = recipes.filter((r) => ![...recipeAllergens(r, ingredients)].some((a) => avoid.has(a)));
   const have = new Set((request.have ?? []).filter((k) => k in ingredients.ingredients));
+  const known = new Set(recipes.map((r) => r.id));
+  const dislikes = (request.dislikes ?? []).filter((id) => known.has(id)); // "nunca mais sugerir"
+  const favorites = new Set((request.favorites ?? []).filter((id) => known.has(id)));
 
-  const plan = planWeek({
+  const options = {
     recipes: allowed,
     products,
     provider: request.provider,
@@ -252,9 +276,23 @@ export function makePlan(request, { recipes, products, ingredients }) {
     balance: request.balance ?? true,
     have,
     locked: request.locked ?? [],
-    exclude: new Set(request.exclude ?? []),
+    exclude: new Set([...(request.exclude ?? []), ...dislikes]),
+    favorites,
     seed: request.seed ?? 0,
-  });
+  };
+
+  // Com `variety`, sorteia entre as receitas quase tão baratas como a melhor. Só aceita o sorteio se der
+  // tantas refeições como o plano mais barato; senão tenta outra vez (a mesma semente dá sempre a mesma
+  // sequência de tentativas) e, em último caso, fica com o plano mais barato.
+  const cheapest = planWeek(options);
+  let plan = null;
+  if (request.variety) {
+    for (let attempt = 0; attempt < SPREAD_ATTEMPTS && !plan; attempt++) {
+      const candidate = planWeek({ ...options, spread: request.variety_spread ?? DEFAULT_SPREAD, seed: options.seed * 131 + attempt });
+      if (candidate.meals.length >= cheapest.meals.length) plan = candidate;
+    }
+  }
+  plan ??= cheapest;
   if (request.strict && plan.meals.length < request.meals) {
     throw new PlanError("Não encontrei nenhuma alternativa que caiba no orçamento.");
   }

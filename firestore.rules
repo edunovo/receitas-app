@@ -32,11 +32,23 @@ service cloud.firestore {
         && request.auth.uid == uid
         && request.resource.data.keys().hasOnly(['settings', 'lastPlan'])
         && (!('settings' in request.resource.data) || (
-              request.resource.data.settings.keys().hasOnly(['pantry', 'avoid'])
+              request.resource.data.settings.keys().hasOnly(['pantry', 'avoid', 'dislikes', 'favorites', 'kcalTarget'])
               && request.resource.data.settings.pantry is list
               && request.resource.data.settings.pantry.size() <= 60
               && request.resource.data.settings.avoid is list
-              && request.resource.data.settings.avoid.size() <= 10))
+              && request.resource.data.settings.avoid.size() <= 10
+              // receitas rejeitadas e favoritas (ids) e meta de calorias por refeição: todos opcionais
+              && (!('dislikes' in request.resource.data.settings) || (
+                    request.resource.data.settings.dislikes is list
+                    && request.resource.data.settings.dislikes.size() <= 200))
+              && (!('favorites' in request.resource.data.settings) || (
+                    request.resource.data.settings.favorites is list
+                    && request.resource.data.settings.favorites.size() <= 200))
+              && (!('kcalTarget' in request.resource.data.settings)
+                  || request.resource.data.settings.kcalTarget == null
+                  || (request.resource.data.settings.kcalTarget is number
+                      && request.resource.data.settings.kcalTarget >= 200
+                      && request.resource.data.settings.kcalTarget <= 3000))))
         && (!('lastPlan' in request.resource.data) ||
               request.resource.data.lastPlan.keys().hasOnly(['request', 'plan', 'savedAt']));
       allow delete: if false;

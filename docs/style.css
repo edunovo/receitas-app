@@ -123,7 +123,8 @@ svg { display: block; }
   border-radius: var(--radius-sm); border: 1px solid var(--line); background: var(--surface); color: var(--text); }
 .btn:hover { border-color: var(--accent); }
 .btn.primary { background: var(--accent); color: var(--accent-ink); border-color: transparent; }
-.btn.small { padding: 0 14px; font-size: 0.9rem; }
+.btn.small { padding: 0 14px; font-size: 0.9rem; gap: 6px; }
+.btn[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent-text); }
 .btn:disabled { opacity: 0.45; cursor: not-allowed; }
 .icobtn { width: 44px; height: 44px; flex: none; display: grid; place-items: center; border: 0; border-radius: 50%; background: transparent; color: var(--muted); cursor: pointer; }
 .icobtn:hover { background: var(--accent-soft); color: var(--text); }
@@ -206,6 +207,8 @@ legend { padding: 0 6px; color: var(--muted); font-size: 0.85rem; font-weight: 6
 .bar > i { display: block; height: 100%; width: 0; border-radius: inherit; background: var(--accent); transition: width 0.35s ease; }
 .hero .meta { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px 8px; font-size: 0.82rem; color: var(--muted); }
 .hero .meta b { color: var(--text); font-weight: 650; }
+.hero .kcal { margin: 8px 0 0; font-size: 0.82rem; color: var(--muted); }
+.hero .kcal.off { color: var(--warn); background: var(--warn-bg); padding: 6px 10px; border-radius: var(--radius-sm); }
 
 /* ---------- refeições ---------- */
 .sectionhead { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 4px 8px; margin: 24px 2px 10px; }
@@ -233,6 +236,7 @@ legend { padding: 0 6px; color: var(--muted); font-size: 0.85rem; font-weight: 6
 .ing li:first-child { border-top: 0; }
 .ing li span:last-child { flex: none; color: var(--muted); font-variant-numeric: tabular-nums; text-align: right; }
 .steps-box > .muted { margin: 6px 0 0; }
+.meal-prefs { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 8px; }
 ol.steps { margin: 0 0 6px; padding-left: 22px; color: var(--muted); font-size: 0.92rem; }
 ol.steps li { padding: 3px 0; }
 

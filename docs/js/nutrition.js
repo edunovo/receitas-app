@@ -51,3 +51,17 @@ export function scaledIngredients(recipe, people, catalog, have) {
     };
   });
 }
+
+/**
+ * Média de calorias por refeição de um plano e como fica em relação à meta do utilizador (por refeição).
+ * `perMeal` tem as calorias por pessoa de cada refeição (null quando não se sabe). Dentro de 15 % da meta
+ * conta como "perto".
+ */
+export function kcalSummary(perMeal, target) {
+  const known = perMeal.filter(Number.isFinite);
+  if (!known.length) return null;
+  const average = roundTo(known.reduce((sum, kcal) => sum + kcal, 0) / known.length, 10);
+  if (!(target > 0)) return { average, target: null, status: null };
+  const ratio = average / target;
+  return { average, target, status: ratio > 1.15 ? "acima" : ratio < 0.85 ? "abaixo" : "perto" };
+}
