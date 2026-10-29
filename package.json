@@ -1,0 +1,11 @@
+{
+  "name": "receitas",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests-js/"
+  },
+  "dependencies": {
+    "firebase": "^13.1.0"
+  }
+}

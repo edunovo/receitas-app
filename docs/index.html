@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Receitas por orçamento</title>
+  <meta name="theme-color" content="#2f7d4f">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <div class="topbar">
+      <h1>Receitas por orçamento</h1>
+      <div id="session" class="session" hidden>
+        <span id="who" class="muted"></span>
+        <button type="button" id="logout" class="secondary small">Sair</button>
+      </div>
+    </div>
+    <p id="mode-banner" class="notice" hidden></p>
+
+    <section id="login-view" hidden>
+      <p class="sub">Inicia sessão para continuar.</p>
+      <form id="login-form" class="login">
+        <label>Email
+          <input name="email" type="email" autocomplete="username" autocapitalize="none" spellcheck="false" required>
+        </label>
+        <label>Palavra-passe
+          <input name="password" type="password" autocomplete="current-password" required>
+        </label>
+        <button type="submit">Entrar</button>
+        <p id="login-error" class="error" role="alert" hidden></p>
+      </form>
+    </section>
+
+    <section id="app-view" hidden>
+      <p class="sub">Diz quanto queres gastar esta semana e sugerimos refeições com os produtos do supermercado.</p>
+
+      <form id="form">
+        <label>Orçamento semanal (€)
+          <input name="budget" type="number" min="1" step="0.5" value="30" required>
+        </label>
+        <label>Refeições
+          <input name="meals" type="number" min="1" max="21" value="7" required>
+        </label>
+        <label>Pessoas
+          <input name="people" type="number" min="1" max="12" value="2" required>
+        </label>
+        <label class="check"><input name="vegetarian" type="checkbox"> Só vegetariano</label>
+        <label class="check"><input name="balance" type="checkbox" checked> Variar carne, peixe e vegetariano</label>
+        <p id="updated" class="muted prices-note"></p>
+
+        <details id="prefs" class="prefs" hidden>
+          <summary>Preferências</summary>
+          <fieldset>
+            <legend>Já tenho em casa</legend>
+            <p class="muted">O que marcares não entra no custo nem na lista de compras.</p>
+            <div id="pantry" class="chips"></div>
+          </fieldset>
+          <fieldset>
+            <legend>Evitar</legend>
+            <div id="avoid" class="chips"></div>
+            <p class="muted">Indicativo: confirma sempre nos rótulos dos produtos.</p>
+          </fieldset>
+        </details>
+
+        <div class="actions">
+          <button type="submit">Sugerir plano</button>
+          <button type="button" id="again" class="secondary" hidden>Outra sugestão</button>
+          <button type="button" id="show-last" class="secondary">Mostrar plano</button>
+        </div>
+      </form>
+
+      <section id="result" hidden>
+        <p id="notice" class="notice" hidden></p>
+        <div id="summary" class="summary"></div>
+        <div id="warnings"></div>
+        <h2>Refeições</h2>
+        <p class="muted">Assume que tens azeite, sal e pimenta em casa. Clica numa refeição para ver os passos, usa <b>Fixar</b> para a manter em "Outra sugestão" ou <b>Trocar</b> para a substituir.</p>
+        <ol id="meals"></ol>
+        <h2>Lista de compras</h2>
+        <p id="cart-progress" class="muted"></p>
+        <p id="at-home" class="muted" hidden></p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th class="check-col"><span class="sr-only">No carrinho</span></th>
+                <th>Produto</th><th>Emb.</th><th class="num">Custo</th><th class="num">Sobra</th>
+              </tr>
+            </thead>
+            <tbody id="shopping"></tbody>
+          </table>
+        </div>
+      </section>
+      <p id="error" class="error" hidden></p>
+
+      <section id="admin" class="admin" hidden>
+        <h2>Administração</h2>
+        <p id="admin-status" class="muted"></p>
+        <p class="muted">Os preços são atualizados por um script local. Os utilizadores gerem-se na consola do Firebase, em Authentication.</p>
+        <details id="catalog-box" class="admin-box">
+          <summary>Estado do catálogo</summary>
+          <div id="catalog-status"></div>
+        </details>
+      </section>
+    </section>
+  </main>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

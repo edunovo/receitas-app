@@ -1,0 +1,17 @@
+# Servidor antigo (FastAPI): fica só no teu PC, não vai para o GitHub
+legacy/
+
+# Ambientes e lixo
+.claude/
+.venv/
+node_modules/
+__pycache__/
+*.pyc
+.pytest_cache/
+logs/
+
+# Chaves e segredos: NUNCA no repositório
+serviceAccount*.json
+*-firebase-adminsdk-*.json
+*.key
+.env

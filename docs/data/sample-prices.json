@@ -1,0 +1,319 @@
+{
+ "fetched_at": "2026-01-01T00:00:00+00:00",
+ "products": [
+  {
+   "id": "arroz-agulha",
+   "name": "Arroz Agulha 1kg",
+   "price": 1.19,
+   "pack_qty": 1000,
+   "unit": "g",
+   "ingredient": "arroz"
+  },
+  {
+   "id": "arroz-premium",
+   "name": "Arroz Agulha Premium 1kg",
+   "price": 1.89,
+   "pack_qty": 1000,
+   "unit": "g",
+   "ingredient": "arroz"
+  },
+  {
+   "id": "massa-esparguete",
+   "name": "Esparguete 500g",
+   "price": 0.99,
+   "pack_qty": 500,
+   "unit": "g",
+   "ingredient": "massa"
+  },
+  {
+   "id": "massa-penne",
+   "name": "Penne 500g",
+   "price": 0.89,
+   "pack_qty": 500,
+   "unit": "g",
+   "ingredient": "massa"
+  },
+  {
+   "id": "batata",
+   "name": "Batata 2kg",
+   "price": 1.99,
+   "pack_qty": 2000,
+   "unit": "g",
+   "ingredient": "batata"
+  },
+  {
+   "id": "cebola",
+   "name": "Cebola 1kg",
+   "price": 1.29,
+   "pack_qty": 1000,
+   "unit": "g",
+   "ingredient": "cebola"
+  },
+  {
+   "id": "alho",
+   "name": "Alho 100g",
+   "price": 0.89,
+   "pack_qty": 100,
+   "unit": "g",
+   "ingredient": "alho"
+  },
+  {
+   "id": "tomate-pelado",
+   "name": "Tomate Pelado 400g",
+   "price": 0.79,
+   "pack_qty": 400,
+   "unit": "g",
+   "ingredient": "tomate-pelado"
+  },
+  {
+   "id": "frango-peito",
+   "name": "Peito de Frango 1kg",
+   "price": 5.99,
+   "pack_qty": 1000,
+   "unit": "g",
+   "ingredient": "peito-frango"
+  },
+  {
+   "id": "carne-picada",
+   "name": "Carne Picada de Vaca 500g",
+   "price": 3.49,
+   "pack_qty": 500,
+   "unit": "g",
+   "ingredient": "carne-picada"
+  },
+  {
+   "id": "bacalhau",
+   "name": "Bacalhau Demolhado 500g",
+   "price": 5.99,
+   "pack_qty": 500,
+   "unit": "g",
+   "ingredient": "bacalhau"
+  },
+  {
+   "id": "atum-lata",
+   "name": "Atum em Lata 120g",
+   "price": 1.69,
+   "pack_qty": 120,
+   "unit": "g",
+   "ingredient": "atum"
+  },
+  {
+   "id": "ovos",
+   "name": "Ovos M 12un",
+   "price": 2.69,
+   "pack_qty": 12,
+   "unit": "un",
+   "ingredient": "ovos"
+  },
+  {
+   "id": "grao-bico",
+   "name": "Grão-de-Bico Cozido 400g",
+   "price": 0.89,
+   "pack_qty": 400,
+   "unit": "g",
+   "ingredient": "grao-de-bico"
+  },
+  {
+   "id": "feijao",
+   "name": "Feijão Preto Cozido 400g",
+   "price": 0.85,
+   "pack_qty": 400,
+   "unit": "g",
+   "ingredient": "feijao"
+  },
+  {
+   "id": "cenoura",
+   "name": "Cenoura 1kg",
+   "price": 0.99,
+   "pack_qty": 1000,
+   "unit": "g",
+   "ingredient": "cenoura"
+  },
+  {
+   "id": "brocolos",
+   "name": "Brócolos 500g",
+   "price": 1.49,
+   "pack_qty": 500,
+   "unit": "g",
+   "ingredient": "brocolos"
+  },
+  {
+   "id": "espinafres",
+   "name": "Espinafres 250g",
+   "price": 1.29,
+   "pack_qty": 250,
+   "unit": "g",
+   "ingredient": "espinafres"
+  },
+  {
+   "id": "courgette",
+   "name": "Courgette 1kg",
+   "price": 1.79,
+   "pack_qty": 1000,
+   "unit": "g",
+   "ingredient": "courgette"
+  },
+  {
+   "id": "pimento",
+   "name": "Pimento Vermelho 500g",
+   "price": 1.49,
+   "pack_qty": 500,
+   "unit": "g",
+   "ingredient": "pimento"
+  },
+  {
+   "id": "natas",
+   "name": "Natas para Culinária 200ml",
+   "price": 0.99,
+   "pack_qty": 200,
+   "unit": "ml",
+   "ingredient": "natas"
+  },
+  {
+   "id": "queijo-ralado",
+   "name": "Queijo Ralado 200g",
+   "price": 1.79,
+   "pack_qty": 200,
+   "unit": "g",
+   "ingredient": "queijo-ralado"
+  },
+  {
+   "id": "salmao",
+   "name": "Salmão Fresco Posta 400g",
+   "price": 7.99,
+   "pack_qty": 400,
+   "unit": "g",
+   "ingredient": "salmao"
+  },
+  {
+   "id": "lentilhas",
+   "name": "Lentilhas Cozidas 400g",
+   "price": 0.89,
+   "pack_qty": 400,
+   "unit": "g",
+   "ingredient": "lentilhas-cozidas"
+  },
+  {
+   "id": "cuscuz",
+   "name": "Cuscuz 500g",
+   "price": 1.09,
+   "pack_qty": 500,
+   "unit": "g",
+   "ingredient": "cuscuz"
+  },
+  {
+   "id": "perna-frango",
+   "name": "Perna de Frango 650g",
+   "price": 4.99,
+   "pack_qty": 650,
+   "unit": "g",
+   "ingredient": "perna-frango"
+  },
+  {
+   "id": "costeleta-porco",
+   "name": "Costeletas de Porco 1kg",
+   "price": 4.99,
+   "pack_qty": 1000,
+   "unit": "g",
+   "ingredient": "costeleta-porco"
+  },
+  {
+   "id": "salsicha-fresca",
+   "name": "Salsichas Frescas de Porco 500g",
+   "price": 2.99,
+   "pack_qty": 500,
+   "unit": "g",
+   "ingredient": "salsicha-fresca"
+  },
+  {
+   "id": "cogumelos",
+   "name": "Cogumelos Laminados 250g",
+   "price": 1.99,
+   "pack_qty": 250,
+   "unit": "g",
+   "ingredient": "cogumelos"
+  },
+  {
+   "id": "tomate",
+   "name": "Tomate Chucha 500g",
+   "price": 1.49,
+   "pack_qty": 500,
+   "unit": "g",
+   "ingredient": "tomate"
+  },
+  {
+   "id": "couve-flor",
+   "name": "Couve-flor 500g",
+   "price": 1.29,
+   "pack_qty": 500,
+   "unit": "g",
+   "ingredient": "couve-flor"
+  },
+  {
+   "id": "ervilhas",
+   "name": "Ervilhas Congeladas 750g",
+   "price": 1.89,
+   "pack_qty": 750,
+   "unit": "g",
+   "ingredient": "ervilhas"
+  },
+  {
+   "id": "feijao-verde",
+   "name": "Feijão-verde Congelado 750g",
+   "price": 2.19,
+   "pack_qty": 750,
+   "unit": "g",
+   "ingredient": "feijao-verde"
+  },
+  {
+   "id": "batata-doce",
+   "name": "Batata-doce 1kg",
+   "price": 1.99,
+   "pack_qty": 1000,
+   "unit": "g",
+   "ingredient": "batata-doce"
+  },
+  {
+   "id": "abobora",
+   "name": "Abóbora aos Pedaços 500g",
+   "price": 1.49,
+   "pack_qty": 500,
+   "unit": "g",
+   "ingredient": "abobora"
+  },
+  {
+   "id": "milho",
+   "name": "Milho Doce em Lata 300g",
+   "price": 0.99,
+   "pack_qty": 300,
+   "unit": "g",
+   "ingredient": "milho"
+  },
+  {
+   "id": "mozzarella",
+   "name": "Mozzarella 125g",
+   "price": 0.99,
+   "pack_qty": 125,
+   "unit": "g",
+   "ingredient": "mozzarella"
+  },
+  {
+   "id": "bifes-peru",
+   "name": "Bifes de Peru 500g",
+   "price": 4.99,
+   "pack_qty": 500,
+   "unit": "g",
+   "ingredient": "bifes-peru"
+  },
+  {
+   "id": "pescada",
+   "name": "Lombos de Pescada 400g",
+   "price": 4.49,
+   "pack_qty": 400,
+   "unit": "g",
+   "ingredient": "pescada"
+  }
+ ],
+ "errors": [],
+ "links": {}
+}

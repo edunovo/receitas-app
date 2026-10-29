@@ -1,0 +1,63 @@
+rules_version = '2';
+
+// Regras do Firestore. São elas que protegem os dados: a configuração do Firebase que está no
+// código da app é pública por desenho. Cola este ficheiro em Firestore Database → Regras → Publicar.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    // Membro: quem tem um documento em members/{uid} (ou em admins/{uid}), criado à mão na consola.
+    // Ter conta não chega: com a chave pública qualquer pessoa pode registar-se na API do Firebase, a
+    // menos que o registo esteja desligado, e uma conta criada por um estranho não deve ver nada.
+    function isMember() {
+      return signedIn() && (
+        exists(/databases/$(database)/documents/members/$(request.auth.uid))
+        || exists(/databases/$(database)/documents/admins/$(request.auth.uid)));
+    }
+
+    // Preços do Continente: os membros leem; ninguém escreve a partir da app.
+    // Quem escreve é um script local com a chave da conta de serviço, que não passa por estas regras.
+    match /prices/{document} {
+      allow read: if isMember();
+      allow write: if false;
+    }
+
+    // Cada membro lê e escreve só o seu documento, e só com os campos que a app usa.
+    match /users/{uid} {
+      allow read: if isMember() && request.auth.uid == uid;
+      allow create, update: if isMember()
+        && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['settings', 'lastPlan'])
+        && (!('settings' in request.resource.data) || (
+              request.resource.data.settings.keys().hasOnly(['pantry', 'avoid'])
+              && request.resource.data.settings.pantry is list
+              && request.resource.data.settings.pantry.size() <= 60
+              && request.resource.data.settings.avoid is list
+              && request.resource.data.settings.avoid.size() <= 10))
+        && (!('lastPlan' in request.resource.data) ||
+              request.resource.data.lastPlan.keys().hasOnly(['request', 'plan', 'savedAt']));
+      allow delete: if false;
+    }
+
+    // Quem tem acesso: a app só consegue ler o documento com o seu próprio UID (conta a existência),
+    // para saber se deve mostrar os dados ou avisar que falta acesso. Criam-se à mão na consola.
+    match /members/{uid} {
+      allow read: if signedIn() && request.auth.uid == uid;
+      allow write: if false;
+    }
+
+    // Quem é admin: o mesmo, só se lê o próprio. A app nunca escreve aqui.
+    match /admins/{uid} {
+      allow read: if signedIn() && request.auth.uid == uid;
+      allow write: if false;
+    }
+
+    // Tudo o resto está fechado.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
