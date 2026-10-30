@@ -131,14 +131,19 @@ export function planWeek({
   variety = 0.3,
   spread = 0,
   favorites = new Set(),
+  maxMinutes = null,
 }) {
   const catalog = new Catalog(products);
   const random = seededRandom(seed);
   const warnings = [];
 
+  // O limite de tempo vale para o que se escolhe de novo; o que já está no plano (`locked`, ao trocar uma
+  // refeição) mantém-se, mesmo que o limite tenha baixado entretanto.
+  const keep = new Set(locked);
   const candidates = [];
   for (const recipe of recipes) {
     if (exclude.has(recipe.id)) continue;
+    if (maxMinutes && recipe.minutes > maxMinutes && !keep.has(recipe.id)) continue;
     if (requireTags.length && !requireTags.every((tag) => recipe.tags.includes(tag))) continue;
     if (catalog.basketCost(recipeNeeds(recipe, people, have)) === Infinity) {
       warnings.push(`'${recipe.title}' ignorada: há ingredientes que o supermercado não tem.`);
@@ -270,7 +275,8 @@ export function makePlan(request, { recipes, products, ingredients }) {
   const favorites = new Set((request.favorites ?? []).filter((id) => known.has(id)));
 
   const options = {
-    recipes: maxMinutes ? allowed.filter((r) => r.minutes <= maxMinutes) : allowed,
+    recipes: allowed,
+    maxMinutes,
     products,
     provider: request.provider,
     budget: request.budget,

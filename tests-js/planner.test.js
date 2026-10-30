@@ -264,6 +264,17 @@ test("o limite de tempo funciona com a troca de uma refeição e com os alergén
   assert.ok(!ids(swapped).includes(target));
 });
 
+test("baixar o limite de tempo e trocar uma refeição não mexe nas outras", () => {
+  const plan = planFor(3, { meals: 7, variety: true });
+  const [target, ...others] = ids(plan);
+  const swapped = planFor(9, { meals: 7, variety: true, max_minutes: 25, locked: others, exclude: [target], strict: true });
+  assert.deepEqual(ids(swapped).filter((id) => others.includes(id)).sort(), [...others].sort(), "outras refeições foram trocadas");
+  assert.ok(!ids(swapped).includes(target));
+  const added = swapped.meals.filter((m) => !others.includes(m.recipe_id));
+  assert.equal(added.length, 1);
+  assert.ok(added[0].minutes <= 25, "a refeição nova tem de respeitar o limite");
+});
+
 test("sem receitas dentro do limite de tempo, o pedido é recusado com uma mensagem clara", () => {
   assert.throws(() => planFor(1, { max_minutes: 5 }), (error) => error instanceof PlanError && /5 minutos/.test(error.message));
 });

@@ -351,6 +351,18 @@ function savePrefs() {
     });
 }
 
+// Mudar o limite não altera o plano que está no ecrã: avisa se ele já não o cumpre.
+$("form").max_minutes.addEventListener("change", () => {
+  const limit = Number($("form").max_minutes.value);
+  if (!lastPlan || !limit) return;
+  const over = lastPlan.meals.filter((meal) => meal.minutes > limit).length;
+  if (over) {
+    setNotice(
+      `${over === 1 ? "Uma refeição deste plano demora" : `${over} refeições deste plano demoram`} mais de ${limit} minutos. O limite aplica-se quando geras um plano novo (Sugerir plano) ou trocas uma refeição.`,
+    );
+  }
+});
+
 $("kcal-target").addEventListener("input", () => {
   // Fora dos limites conta como "sem meta": as regras do Firestore recusariam o resto das preferências.
   const value = Math.round(Number($("kcal-target").value));
