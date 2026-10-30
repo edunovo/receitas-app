@@ -153,7 +153,7 @@ export function planWeek({
   let needs = new Map();
   let currentCost = 0;
 
-  // Receitas fixadas entram primeiro, se ainda forem possíveis e couberem no orçamento.
+  // As receitas em `locked` (as que ficam ao trocar uma refeição) entram primeiro, se ainda couberem no orçamento.
   const byId = new Map(candidates.map((r) => [r.id, r]));
   for (const recipeId of locked.slice(0, meals)) {
     const recipe = byId.get(recipeId);
@@ -161,7 +161,7 @@ export function planWeek({
     const newNeeds = merge(needs, recipeNeeds(recipe, people, have));
     const newCost = catalog.basketCost(newNeeds);
     if (newCost > budget + EPS) {
-      warnings.push(`'${recipe.title}' estava fixada mas já não cabe no orçamento.`);
+      warnings.push(`'${recipe.title}' ficava no plano mas já não cabe no orçamento.`);
       continue;
     }
     chosen.push(recipe);

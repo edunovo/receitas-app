@@ -22,7 +22,6 @@ let prices = null; // documento de preços: { fetched_at, products, errors, link
 let lastPlan = null; // plano que está no ecrã
 let currentRequest = null; // pedido que deu origem ao plano que está no ecrã
 let savedPlans = []; // listas guardadas: { id, name, savedAt, request, plan }
-let fixed = new Set(); // receitas fixadas pelo utilizador
 // Preferências que ficam guardadas por utilizador (junto com "já tenho em casa" e "evitar").
 const prefsState = { favorites: new Set(), dislikes: new Set(), kcalTarget: null };
 const KCAL_MIN = 200; // os mesmos limites que firestore.rules aceita
@@ -112,9 +111,7 @@ function show(view) {
 
 function clearResult() {
   lastPlan = null;
-  fixed = new Set();
   $("result").hidden = true;
-  $("again").hidden = true;
   showError(null);
   for (const id of ["hero-meta", "warnings", "meals", "shopping"]) $(id).replaceChildren();
   $("hero-kcal").hidden = true;
@@ -410,22 +407,11 @@ function mealItem(meal, info, { readonly = false } = {}) {
   const text = el("div", undefined, "txt");
   text.append(el("div", meal.title, "name"), sub);
 
-  const pin = iconButton("pin", `Fixar ${meal.title}`, () => {
-    if (fixed.has(meal.recipe_id)) fixed.delete(meal.recipe_id);
-    else fixed.add(meal.recipe_id);
-    paintPin();
-  });
-  const paintPin = () => {
-    const on = fixed.has(meal.recipe_id);
-    pin.setAttribute("aria-pressed", String(on));
-    pin.title = on ? "Fixada: fica na próxima sugestão" : "Fixar para a manter na próxima sugestão";
-  };
-  paintPin();
   const swap = iconButton("swap", `Trocar ${meal.title}`, () => swapMeal(meal.recipe_id));
   swap.title = "Trocar por outra refeição";
 
   const main = el("div", undefined, "meal-main");
-  main.append(text, ...(readonly ? [] : [pin, swap]));
+  main.append(text, ...(readonly ? [] : [swap]));
 
   const steps = el("ol", undefined, "steps");
   steps.append(...meal.steps.map((s) => el("li", s)));
@@ -570,7 +556,6 @@ function renderKcal(perMeal) {
 
 function render(plan) {
   lastPlan = plan;
-  fixed = new Set([...fixed].filter((id) => plan.meals.some((m) => m.recipe_id === id)));
 
   renderHero(plan);
   $("warnings").replaceChildren(...plan.warnings.map((w) => el("div", w, "warn")));
@@ -584,15 +569,15 @@ function render(plan) {
   renderKcal(lastKcal);
   renderShopping(plan);
   $("result").hidden = false;
-  $("again").hidden = false;
   renderSaved();
 }
 
 // Devolve true se mostrou um plano novo.
 async function run(seed, extra = {}) {
+  const { slot, ...requestExtra } = extra; // `slot`: posição da refeição trocada; não faz parte do pedido
   showError(null);
   if (!prices && !(await loadPrices())) return false;
-  const request = buildRequest(seed, extra);
+  const request = buildRequest(seed, requestExtra);
 
   let plan;
   try {
@@ -609,6 +594,10 @@ async function run(seed, extra = {}) {
     return false;
   }
 
+  // Ao trocar uma refeição, a nova fica no lugar da que saiu (e não no fim da lista).
+  const added = slot === undefined ? -1 : plan.meals.findIndex((m) => !request.locked.includes(m.recipe_id));
+  if (added >= 0) plan.meals.splice(slot, 0, ...plan.meals.splice(added, 1));
+
   currentRequest = request;
   render(plan);
   setNotice("Plano guardado. Substitui o anterior.");
@@ -624,7 +613,8 @@ async function run(seed, extra = {}) {
 async function swapMeal(recipeId) {
   if (!lastPlan) return;
   const others = lastPlan.meals.map((m) => m.recipe_id).filter((id) => id !== recipeId);
-  return run(randomSeed(), { locked: others, exclude: [recipeId], strict: true, meals: lastPlan.meals.length });
+  const slot = lastPlan.meals.findIndex((m) => m.recipe_id === recipeId);
+  return run(randomSeed(), { locked: others, exclude: [recipeId], strict: true, meals: lastPlan.meals.length, slot });
 }
 
 // "Nunca mais sugerir": guarda a receita como rejeitada e troca-a já por outra.
@@ -673,10 +663,8 @@ async function showLast() {
 
 $("form").addEventListener("submit", (e) => {
   e.preventDefault();
-  fixed = new Set(); // um plano novo começa sem refeições fixadas
-  run(0);
+  run(randomSeed()); // cada vez que se pede, sai um plano diferente
 });
-$("again").addEventListener("click", () => run(randomSeed(), { locked: [...fixed] }));
 $("show-last").addEventListener("click", showLast);
 
 // --- listas guardadas e favoritos ----------------------------------------------------------------

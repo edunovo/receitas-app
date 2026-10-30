@@ -150,16 +150,16 @@ test("makePlan devolve os ingredientes em casa com nomes legíveis e ignora chav
 
 // --- fixar, excluir e trocar ----------------------------------------------------------------------
 
-test("receitas fixadas mantêm-se", () => {
+test("as receitas mantidas (as que ficam ao trocar outra) mantêm-se", () => {
   const plan = planWeek({ recipes, products, ...base, meals: 4, locked: ["arroz-frango", "arroz-atum"] });
   assert.deepEqual(ids(plan).slice(0, 2), ["arroz-frango", "arroz-atum"]);
   assert.equal(plan.meals.length, 4);
 });
 
-test("receita fixada que já não cabe no orçamento é largada com aviso", () => {
+test("receita mantida que já não cabe no orçamento é largada com aviso", () => {
   const plan = planWeek({ recipes, products, ...base, budget: 3, meals: 2, locked: ["salmao-forno"] });
   assert.ok(!ids(plan).includes("salmao-forno"));
-  assert.ok(plan.warnings.some((w) => w.includes("fixada")));
+  assert.ok(plan.warnings.some((w) => w.includes("já não cabe")));
 });
 
 test("receitas excluídas nunca são escolhidas", () => {
