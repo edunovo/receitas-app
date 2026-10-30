@@ -49,7 +49,7 @@ Abre http://localhost:8000. (No VS Code/Claude, o `.claude/launch.json` já tem 
 - **Lista de compras com caixas:** marcas o que já pões no carrinho, tocando na linha. As marcas ficam no dispositivo e valem enquanto o plano for o mesmo. Vem agrupada pela **secção do supermercado**: frescos primeiro e congelados no fim.
 - **Já tenho em casa:** o que marcares não entra no custo nem na lista. O **alho** vem marcado por defeito. Fica guardado por utilizador.
 - **Evitar:** glúten, lactose, peixe ou ovos (indicativo: confirma sempre nos rótulos; `docs/data/ingredients.json`).
-- **Tempo por refeição:** no formulário podes limitar o tempo de preparação (até 25, 30 ou 45 minutos). Só entram receitas que ficam prontas a tempo, também ao trocar uma refeição. Com um limite muito baixo e um orçamento curto, o plano pode ter menos refeições, e a app avisa.
+- **Tempo por refeição:** no formulário podes limitar o tempo de preparação (até 15 ou 30 minutos). Só entram receitas que ficam prontas a tempo, também ao trocar uma refeição. Com um limite muito baixo e um orçamento curto, o plano pode ter menos refeições, e a app avisa.
 - **Trocar:** o ícone da roda, em cada refeição, troca só essa refeição por outra, dentro do orçamento, e a nova fica no mesmo lugar. *Sugerir plano* gera sempre um plano novo.
 - **Plano guardado:** cada utilizador tem só o último plano; um novo substitui o anterior. *Mostrar plano* volta a mostrá-lo, em qualquer dispositivo.
 - **Sem rede:** a app, as receitas e os últimos preços ficam guardados no dispositivo, por isso abre, mostra o plano e até gera planos novos sem ligação (o SDK do Firebase também fica guardado).

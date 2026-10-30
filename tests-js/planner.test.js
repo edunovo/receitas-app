@@ -247,7 +247,7 @@ test("as receitas marcadas como 'nunca mais sugerir' não saem, nem a trocar nem
 });
 
 test("o limite de tempo só deixa entrar receitas que ficam prontas a tempo", () => {
-  for (const max_minutes of [25, 30, 45]) {
+  for (const max_minutes of [15, 30]) {
     for (const seed of seeds.slice(0, 10)) {
       const plan = planFor(seed, { max_minutes, meals: 5, variety: true });
       assert.ok(plan.meals.length > 0);
@@ -267,12 +267,12 @@ test("o limite de tempo funciona com a troca de uma refeição e com os alergén
 test("baixar o limite de tempo e trocar uma refeição não mexe nas outras", () => {
   const plan = planFor(3, { meals: 7, variety: true });
   const [target, ...others] = ids(plan);
-  const swapped = planFor(9, { meals: 7, variety: true, max_minutes: 25, locked: others, exclude: [target], strict: true });
+  const swapped = planFor(9, { meals: 7, variety: true, max_minutes: 30, locked: others, exclude: [target], strict: true });
   assert.deepEqual(ids(swapped).filter((id) => others.includes(id)).sort(), [...others].sort(), "outras refeições foram trocadas");
   assert.ok(!ids(swapped).includes(target));
   const added = swapped.meals.filter((m) => !others.includes(m.recipe_id));
   assert.equal(added.length, 1);
-  assert.ok(added[0].minutes <= 25, "a refeição nova tem de respeitar o limite");
+  assert.ok(added[0].minutes <= 30, "a refeição nova tem de respeitar o limite");
 });
 
 test("sem receitas dentro do limite de tempo, o pedido é recusado com uma mensagem clara", () => {
