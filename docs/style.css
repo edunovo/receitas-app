@@ -166,6 +166,8 @@ svg { display: block; }
 .field .value { display: flex; align-items: baseline; gap: 4px; }
 .field .unit { color: var(--muted); font: 600 1rem var(--num-font); }
 #login-view .field input, #save-name { font: 500 1rem var(--body-font); min-height: 32px; }
+/* 16 px ou mais, pelo mesmo motivo dos campos de texto */
+.field select { width: 100%; min-height: 30px; padding: 0; border: 0; outline: 0; background: transparent; color: var(--text); font: 650 1.1rem var(--num-font); cursor: pointer; }
 input[type="number"]::-webkit-inner-spin-button { appearance: none; margin: 0; }
 input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
 

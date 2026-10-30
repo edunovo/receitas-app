@@ -370,6 +370,7 @@ function buildRequest(seed, extra = {}) {
     people: Number(f.people.value),
     require_tags: [],
     balance: f.balance.checked,
+    max_minutes: Number(f.max_minutes.value) || null,
     have: checkedValues($("pantry")),
     avoid: checkedValues($("avoid")),
     dislikes: [...prefsState.dislikes],
@@ -386,6 +387,7 @@ function restoreForm(request) {
   f.meals.value = request.meals;
   f.people.value = request.people;
   f.balance.checked = request.balance;
+  f.max_minutes.value = request.max_minutes ?? ""; // planos antigos não têm limite
   f.variety.checked = request.variety ?? f.variety.checked; // planos antigos não dizem; fica como está
 }
 

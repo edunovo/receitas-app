@@ -246,6 +246,34 @@ test("as receitas marcadas como 'nunca mais sugerir' não saem, nem a trocar nem
   }
 });
 
+test("o limite de tempo só deixa entrar receitas que ficam prontas a tempo", () => {
+  for (const max_minutes of [25, 30, 45]) {
+    for (const seed of seeds.slice(0, 10)) {
+      const plan = planFor(seed, { max_minutes, meals: 5, variety: true });
+      assert.ok(plan.meals.length > 0);
+      assert.ok(plan.meals.every((m) => m.minutes <= max_minutes), `saiu uma receita com mais de ${max_minutes} min`);
+    }
+  }
+});
+
+test("o limite de tempo funciona com a troca de uma refeição e com os alergénios", () => {
+  const plan = planFor(3, { max_minutes: 30, meals: 4, avoid: ["marisco", "ovo"] });
+  const [target, ...others] = ids(plan);
+  const swapped = planFor(9, { max_minutes: 30, meals: 4, avoid: ["marisco", "ovo"], locked: others, exclude: [target], strict: true });
+  assert.ok(swapped.meals.every((m) => m.minutes <= 30));
+  assert.ok(!ids(swapped).includes(target));
+});
+
+test("sem receitas dentro do limite de tempo, o pedido é recusado com uma mensagem clara", () => {
+  assert.throws(() => planFor(1, { max_minutes: 5 }), (error) => error instanceof PlanError && /5 minutos/.test(error.message));
+});
+
+test("um limite de tempo inválido é ignorado", () => {
+  for (const max_minutes of [null, 0, -3, Number.NaN, "depressa"]) {
+    assert.ok(planFor(2, { max_minutes }).meals.length > 0);
+  }
+});
+
 test("as favoritas saem mais vezes", () => {
   const favorites = ["bife-vaca-arroz-brocolos", "arroz-camarao"];
   const count = (extra) => seeds.filter((seed) => ids(planFor(seed, { variety: true, ...extra })).some((id) => favorites.includes(id))).length;

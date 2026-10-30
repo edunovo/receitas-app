@@ -260,12 +260,17 @@ export function makePlan(request, { recipes, products, ingredients }) {
   const avoid = new Set((request.avoid ?? []).filter((a) => a in ingredients.allergens));
   const allowed = recipes.filter((r) => ![...recipeAllergens(r, ingredients)].some((a) => avoid.has(a)));
   const have = new Set((request.have ?? []).filter((k) => k in ingredients.ingredients));
+  // Tempo máximo de preparação por refeição (minutos); sem valor válido, não filtra.
+  const maxMinutes = Number.isFinite(request.max_minutes) && request.max_minutes > 0 ? request.max_minutes : null;
+  if (maxMinutes && !allowed.some((r) => r.minutes <= maxMinutes)) {
+    throw new PlanError(`Não há receitas que fiquem prontas em ${maxMinutes} minutos ou menos.`);
+  }
   const known = new Set(recipes.map((r) => r.id));
   const dislikes = (request.dislikes ?? []).filter((id) => known.has(id)); // "nunca mais sugerir"
   const favorites = new Set((request.favorites ?? []).filter((id) => known.has(id)));
 
   const options = {
-    recipes: allowed,
+    recipes: maxMinutes ? allowed.filter((r) => r.minutes <= maxMinutes) : allowed,
     products,
     provider: request.provider,
     budget: request.budget,
