@@ -767,7 +767,6 @@ function openSaved(entry) {
 }
 
 async function deleteSaved(entry) {
-  if (!confirm(`Apagar a lista «${entry.name}»?`)) return;
   await persistSaved(
     savedPlans.filter((saved) => saved.id !== entry.id),
     "Não foi possível apagar a lista (sem ligação). Tenta de novo quando tiveres rede.",
