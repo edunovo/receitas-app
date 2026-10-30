@@ -121,11 +121,6 @@
               <p class="muted">Um almoço ou jantar costuma ter 500 a 800 kcal. O plano mostra a média e se fica perto da tua meta.</p>
             </fieldset>
             <fieldset>
-              <legend>Receitas favoritas</legend>
-              <div id="favorites" class="chips"></div>
-              <p class="muted">Saem mais vezes nos planos. Marca-as dentro de cada refeição.</p>
-            </fieldset>
-            <fieldset>
               <legend>Receitas que não quero</legend>
               <div id="dislikes" class="chips"></div>
               <p class="muted">Nunca são sugeridas. Toca para voltar a aceitar.</p>
@@ -143,6 +138,25 @@
             <button type="button" id="show-last" class="btn">Mostrar plano</button>
           </div>
         </form>
+
+        <div id="library" class="library">
+          <details id="saved-box" class="card">
+            <summary>Listas guardadas <span id="saved-count" class="count"></span></summary>
+            <div class="save-row">
+              <label class="field"><span>Nome da lista</span>
+                <span class="value"><input id="save-name" type="text" maxlength="40" placeholder="Ex.: semana de 4 a 10" autocomplete="off"></span>
+              </label>
+              <button type="button" id="save-plan" class="btn primary">Guardar plano atual</button>
+            </div>
+            <p id="save-hint" class="muted"></p>
+            <ul id="saved-list" class="saved"></ul>
+          </details>
+          <details id="fav-box" class="card">
+            <summary>Favoritos <span id="fav-count" class="count"></span></summary>
+            <p class="muted">Saem mais vezes nos planos. Para tirar uma, toca em "Favorita".</p>
+            <ul id="fav-list" class="meals"></ul>
+          </details>
+        </div>
 
         <p id="error" hidden></p>
 

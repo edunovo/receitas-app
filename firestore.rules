@@ -30,7 +30,11 @@ service cloud.firestore {
       allow read: if isMember() && request.auth.uid == uid;
       allow create, update: if isMember()
         && request.auth.uid == uid
-        && request.resource.data.keys().hasOnly(['settings', 'lastPlan'])
+        && request.resource.data.keys().hasOnly(['settings', 'lastPlan', 'savedPlans'])
+        // listas guardadas: no máximo 5 (a app não deixa guardar mais)
+        && (!('savedPlans' in request.resource.data) || (
+              request.resource.data.savedPlans is list
+              && request.resource.data.savedPlans.size() <= 5))
         && (!('settings' in request.resource.data) || (
               request.resource.data.settings.keys().hasOnly(['pantry', 'avoid', 'dislikes', 'favorites', 'kcalTarget'])
               && request.resource.data.settings.pantry is list

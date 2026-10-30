@@ -40,7 +40,8 @@ test("o documento de cada utilizador exige ser membro e ser o próprio", () => {
   const users = block("/users/{uid}");
   assert.match(users, /allow read: if isMember\(\) && request\.auth\.uid == uid;/);
   assert.match(users, /allow create, update: if isMember\(\)\s*&& request\.auth\.uid == uid/);
-  assert.match(users, /hasOnly\(\['settings', 'lastPlan'\]\)/);
+  assert.match(users, /hasOnly\(\['settings', 'lastPlan', 'savedPlans'\]\)/);
+  assert.match(users, /savedPlans\.size\(\) <= 5/);
   assert.match(users, /allow delete: if false;/);
 });
 

@@ -8,6 +8,8 @@ const $ = (id) => document.getElementById(id);
 const eur = (n) => n.toLocaleString("pt-PT", { style: "currency", currency: "EUR" });
 const STORE_KEY = "receitas:last-plan";
 const CART_KEY = "receitas:cart";
+const SAVED_KEY = "receitas:saved-plans"; // cópia das listas guardadas, para as veres sem rede
+const MAX_SAVED = 5; // o mesmo limite que firestore.rules aceita
 // O alho vem marcado como "já em casa" até o utilizador guardar uma escolha sua: a app contava
 // um saco inteiro (400 g, 2,39 €) para usar 10 g numa receita.
 const DEFAULT_PANTRY = ["alho"];
@@ -18,6 +20,8 @@ let recipes = [];
 let ingredients = null;
 let prices = null; // documento de preços: { fetched_at, products, errors, links }
 let lastPlan = null; // plano que está no ecrã
+let currentRequest = null; // pedido que deu origem ao plano que está no ecrã
+let savedPlans = []; // listas guardadas: { id, name, savedAt, request, plan }
 let fixed = new Set(); // receitas fixadas pelo utilizador
 // Preferências que ficam guardadas por utilizador (junto com "já tenho em casa" e "evitar").
 const prefsState = { favorites: new Set(), dislikes: new Set(), kcalTarget: null };
@@ -43,6 +47,13 @@ function icon(name, size = 22) {
   use.setAttribute("href", `#i-${name}`);
   svg.append(use);
   return svg;
+}
+
+function button(text, onClick, className) {
+  const node = el("button", text, className);
+  node.type = "button";
+  node.addEventListener("click", onClick);
+  return node;
 }
 
 function textButton(iconName, text, onClick) {
@@ -82,7 +93,7 @@ function setNotice(text) {
 
 function clearLocalCopies() {
   try {
-    for (const key of [STORE_KEY, CART_KEY, PRICES_KEY, LAST_USER_KEY]) localStorage.removeItem(key);
+    for (const key of [STORE_KEY, CART_KEY, SAVED_KEY, PRICES_KEY, LAST_USER_KEY]) localStorage.removeItem(key);
   } catch {
     /* nada a fazer */
   }
@@ -107,10 +118,13 @@ function clearResult() {
   showError(null);
   for (const id of ["hero-meta", "warnings", "meals", "shopping"]) $(id).replaceChildren();
   $("hero-kcal").hidden = true;
+  currentRequest = null;
+  renderSaved();
 }
 
 function showLogin() {
   currentUser = null;
+  resetUserState();
   clearResult(); // o plano do utilizador anterior não fica no ecrã
   $("catalog-box").open = false;
   show("login");
@@ -161,6 +175,7 @@ async function enterApp(user) {
   const token = ++userToken;
   currentUser = user;
   rememberUser(user);
+  resetUserState();
   show("app");
   showError(null);
 
@@ -256,10 +271,7 @@ const recipeTitle = (id) => recipes.find((r) => r.id === id)?.title;
 
 // Receitas favoritas e rejeitadas: uma etiqueta por receita; desmarcar tira-a da lista.
 function renderRecipeLists() {
-  for (const [boxId, ids] of [
-    ["favorites", prefsState.favorites],
-    ["dislikes", prefsState.dislikes],
-  ]) {
+  for (const [boxId, ids] of [["dislikes", prefsState.dislikes]]) {
     const box = $(boxId);
     const known = [...ids].filter(recipeTitle);
     if (!known.length) {
@@ -286,7 +298,7 @@ function renderRecipeLists() {
 }
 
 function paintFavoriteButtons() {
-  for (const button of document.querySelectorAll("#meals .fav")) {
+  for (const button of document.querySelectorAll(".fav")) {
     const on = prefsState.favorites.has(button.dataset.id);
     button.setAttribute("aria-pressed", String(on));
     button.lastChild.textContent = on ? " Favorita" : " Adicionar às favoritas";
@@ -298,8 +310,12 @@ const usedIngredients = { has: (key) => recipes.some((r) => r.ingredients.some((
 async function loadPrefs() {
   let settings = null;
   try {
-    settings = (await backend.loadUserDoc(currentUser)).settings ?? null;
+    const doc = await backend.loadUserDoc(currentUser);
+    settings = doc.settings ?? null;
+    setSavedPlans(doc.savedPlans ?? []);
   } catch {
+    const copy = readJson(SAVED_KEY); // sem ligação: as listas que ficaram guardadas neste dispositivo
+    if (copy?.user && copy.user === currentUser?.uid) setSavedPlans(copy.list ?? [], false);
     $("prefs").hidden = true; // sem ligação não dá para ver nem guardar preferências
     return;
   }
@@ -320,6 +336,7 @@ async function loadPrefs() {
   prefsState.kcalTarget = Number.isFinite(settings?.kcalTarget) ? settings.kcalTarget : null;
   $("kcal-target").value = prefsState.kcalTarget ?? "";
   renderRecipeLists();
+  renderFavorites();
   $("prefs").hidden = false;
 }
 
@@ -379,7 +396,7 @@ function restoreForm(request) {
 // "vegetariana" fica só para mostrar planos guardados antes de as receitas vegetarianas serem retiradas.
 const KIND = { carne: ["carne", "Carne"], peixe: ["peixe", "Peixe"], vegetariana: ["veg", "Vegetariana"] };
 
-function mealItem(meal, info) {
+function mealItem(meal, info, { readonly = false } = {}) {
   const [kind, kindLabel] = KIND[category(meal)];
   const li = el("li", undefined, "meal");
   li.dataset.k = kind;
@@ -408,7 +425,7 @@ function mealItem(meal, info) {
   swap.title = "Trocar por outra refeição";
 
   const main = el("div", undefined, "meal-main");
-  main.append(text, pin, swap);
+  main.append(text, ...(readonly ? [] : [pin, swap]));
 
   const steps = el("ol", undefined, "steps");
   steps.append(...meal.steps.map((s) => el("li", s)));
@@ -433,14 +450,14 @@ function mealItem(meal, info) {
     if (prefsState.favorites.has(meal.recipe_id)) prefsState.favorites.delete(meal.recipe_id);
     else prefsState.favorites.add(meal.recipe_id);
     paintFavoriteButtons();
-    renderRecipeLists();
+    renderFavorites();
     schedulePrefsSave();
   });
   favorite.classList.add("fav");
   favorite.dataset.id = meal.recipe_id;
   const never = textButton("ban", "Nunca mais sugerir", () => dislikeMeal(meal));
   const prefsRow = el("div", undefined, "meal-prefs");
-  prefsRow.append(favorite, never);
+  prefsRow.append(favorite, ...(readonly ? [] : [never]));
   // Só para receitas que ainda existem: nos planos antigos pode haver pratos já retirados.
   if (recipeTitle(meal.recipe_id)) details.append(prefsRow);
 
@@ -568,6 +585,7 @@ function render(plan) {
   renderShopping(plan);
   $("result").hidden = false;
   $("again").hidden = false;
+  renderSaved();
 }
 
 // Devolve true se mostrou um plano novo.
@@ -591,6 +609,7 @@ async function run(seed, extra = {}) {
     return false;
   }
 
+  currentRequest = request;
   render(plan);
   setNotice("Plano guardado. Substitui o anterior.");
   const entry = { request, plan, savedAt: new Date().toISOString() };
@@ -642,6 +661,7 @@ async function showLast() {
     offline = true;
   }
   restoreForm(entry.request);
+  currentRequest = entry.request;
   render(entry.plan);
   setNotice(
     offline
@@ -658,6 +678,125 @@ $("form").addEventListener("submit", (e) => {
 });
 $("again").addEventListener("click", () => run(randomSeed(), { locked: [...fixed] }));
 $("show-last").addEventListener("click", showLast);
+
+// --- listas guardadas e favoritos ----------------------------------------------------------------
+// Até 5 planos com a sua lista de compras, com nome; ficam por utilizador e abrem-se sem rede.
+
+function resetUserState() {
+  prefsState.favorites = new Set();
+  prefsState.dislikes = new Set();
+  prefsState.kcalTarget = null;
+  savedPlans = [];
+  renderSaved();
+  renderFavorites();
+}
+
+function setSavedPlans(list, keepCopy = true) {
+  savedPlans = list.slice(0, MAX_SAVED);
+  if (keepCopy) writeJson(SAVED_KEY, { user: currentUser?.uid ?? null, list: savedPlans });
+  renderSaved();
+}
+
+function renderSaved() {
+  $("saved-count").textContent = `${savedPlans.length} de ${MAX_SAVED}`;
+  const full = savedPlans.length >= MAX_SAVED;
+  $("save-plan").disabled = !lastPlan || full;
+  $("save-hint").textContent = full
+    ? `Já tens ${MAX_SAVED} listas guardadas. Apaga uma para guardar outra.`
+    : !lastPlan
+      ? "Gera ou abre um plano para o poderes guardar."
+      : "";
+
+  if (!savedPlans.length) {
+    $("saved-list").replaceChildren(el("li", "Ainda não guardaste nenhuma lista.", "muted"));
+    return;
+  }
+  $("saved-list").replaceChildren(
+    ...savedPlans.map((entry) => {
+      const li = el("li");
+      li.append(el("div", entry.name, "name"));
+      const meals = entry.plan.meals.length;
+      li.append(el("div", `${meals} ${meals === 1 ? "refeição" : "refeições"} · ${eur(entry.plan.total_cost)} · guardada a ${formatDate(entry.savedAt)}`, "info"));
+      const actions = el("div", undefined, "row-actions");
+      actions.append(
+        button("Abrir", () => openSaved(entry), "btn small primary"),
+        button("Apagar", () => deleteSaved(entry), "btn small"),
+      );
+      li.append(actions);
+      return li;
+    }),
+  );
+}
+
+async function persistSaved(next, failure) {
+  const previous = savedPlans;
+  setSavedPlans(next);
+  try {
+    await backend.saveSavedPlans(currentUser, next);
+    return true;
+  } catch {
+    setSavedPlans(previous);
+    setNotice(failure);
+    return false;
+  }
+}
+
+async function saveCurrentPlan() {
+  if (!lastPlan || !currentRequest || savedPlans.length >= MAX_SAVED) return;
+  const typed = $("save-name").value.trim();
+  const entry = {
+    id: Date.now().toString(36),
+    name: typed || `Plano de ${new Date().toLocaleDateString("pt-PT", { day: "2-digit", month: "2-digit" })}`,
+    savedAt: new Date().toISOString(),
+    request: currentRequest,
+    plan: lastPlan,
+  };
+  if (await persistSaved([...savedPlans, entry], "Não foi possível guardar a lista (sem ligação). Tenta de novo quando tiveres rede.")) {
+    $("save-name").value = "";
+    setNotice(`Lista «${entry.name}» guardada.`);
+  }
+}
+
+function openSaved(entry) {
+  showError(null);
+  restoreForm(entry.request);
+  currentRequest = entry.request;
+  render(entry.plan);
+  setNotice(`Lista «${entry.name}», guardada a ${formatDate(entry.savedAt)}.`);
+  $("result").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+async function deleteSaved(entry) {
+  if (!confirm(`Apagar a lista «${entry.name}»?`)) return;
+  await persistSaved(
+    savedPlans.filter((saved) => saved.id !== entry.id),
+    "Não foi possível apagar a lista (sem ligação). Tenta de novo quando tiveres rede.",
+  );
+}
+
+// Favoritos: as receitas marcadas, com ingredientes e passos, para o número de pessoas do formulário.
+function renderFavorites() {
+  const known = [...prefsState.favorites].filter(recipeTitle);
+  $("fav-count").textContent = String(known.length);
+  if (!known.length) {
+    $("fav-list").replaceChildren(el("li", "Ainda não tens favoritos. Abre uma refeição e toca em \"Adicionar às favoritas\".", "muted"));
+    return;
+  }
+  const people = Number($("form").people.value) || 2;
+  const have = new Set(checkedValues($("pantry")));
+  $("fav-list").replaceChildren(
+    ...known.map((id) => {
+      const recipe = recipes.find((r) => r.id === id);
+      const meal = { recipe_id: id, title: recipe.title, minutes: recipe.minutes, tags: recipe.tags, steps: recipe.steps };
+      const info = mealDetails(id, people, { recipes, ingredients }, have);
+      return mealItem(meal, info, { readonly: true });
+    }),
+  );
+  paintFavoriteButtons();
+}
+
+$("save-plan").addEventListener("click", saveCurrentPlan);
+$("form").people.addEventListener("input", renderFavorites); // as quantidades dependem das pessoas
 
 // --- estado do catálogo (só admin) -------------------------------------------------------------
 

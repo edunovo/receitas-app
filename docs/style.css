@@ -165,7 +165,7 @@ svg { display: block; }
   font: 650 1.25rem var(--num-font); font-variant-numeric: tabular-nums; }
 .field .value { display: flex; align-items: baseline; gap: 4px; }
 .field .unit { color: var(--muted); font: 600 1rem var(--num-font); }
-#login-view .field input { font: 500 1rem var(--body-font); min-height: 32px; }
+#login-view .field input, #save-name { font: 500 1rem var(--body-font); min-height: 32px; }
 input[type="number"]::-webkit-inner-spin-button { appearance: none; margin: 0; }
 input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
 
@@ -189,16 +189,32 @@ legend { padding: 0 6px; color: var(--muted); font-size: 0.85rem; font-weight: 6
 .chip input { width: 20px; height: 20px; margin: 0; accent-color: var(--accent); }
 
 /* ---------- disposição ---------- */
-.layout { display: grid; gap: 14px; max-width: 640px; margin: 0 auto; grid-template-columns: minmax(0, 1fr); grid-template-areas: "form" "err" "hero" "main"; }
+.layout { display: grid; gap: 14px; max-width: 640px; margin: 0 auto; grid-template-columns: minmax(0, 1fr); grid-template-areas: "form" "lib" "err" "hero" "main"; }
+#library { grid-area: lib; display: grid; gap: 10px; align-content: start; }
 #form { grid-area: form; }
 #error { grid-area: err; }
 #result { display: contents; }
 #hero-col { grid-area: hero; display: grid; gap: 8px; align-content: start; }
 #plan-main { grid-area: main; min-width: 0; }
 @media (min-width: 880px) {
-  .layout { max-width: none; gap: 14px 28px; grid-template-columns: 360px minmax(0, 1fr); grid-template-rows: auto auto auto 1fr; align-items: start;
-    grid-template-areas: "form main" "err main" "hero main" ". main"; }
+  .layout { max-width: none; gap: 14px 28px; grid-template-columns: 360px minmax(0, 1fr); grid-template-rows: auto auto auto auto 1fr; align-items: start;
+    grid-template-areas: "form main" "lib main" "err main" "hero main" ". main"; }
 }
+
+/* ---------- listas guardadas e favoritos ---------- */
+#library > details { padding: 4px 16px; }
+#library > details[open] { padding-bottom: 14px; }
+#library summary { display: flex; align-items: center; gap: 8px; min-height: 48px; font-weight: 650; cursor: pointer; }
+.count { font-weight: 400; font-size: 0.85rem; color: var(--muted); }
+.save-row { display: grid; gap: 8px; margin: 4px 0 8px; }
+.saved { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.saved li { display: grid; gap: 8px; padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--bg); }
+.saved .name { font-weight: 600; overflow-wrap: anywhere; }
+.saved .info { font-size: 0.8rem; color: var(--muted); }
+.saved .row-actions { display: flex; gap: 8px; }
+.saved .row-actions .btn { flex: 1; }
+#fav-list { margin-top: 8px; }
+#library .meals { grid-template-columns: minmax(0, 1fr); }
 
 /* ---------- resumo ---------- */
 .hero .big { font: var(--head-weight) 2.3rem/1 var(--num-font); margin: 6px 0 2px; font-variant-numeric: tabular-nums; }

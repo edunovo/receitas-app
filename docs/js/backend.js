@@ -6,8 +6,8 @@
 //
 // Interface de cada backend:
 //   mode, onUser(callback) → cancelar, signIn(email, password), signOut(), isAdmin(user),
-//   isMember(user), loadPrices() → { prices, fromCache }, loadUserDoc(user) → { settings?, lastPlan? },
-//   saveSettings(user, settings), saveLastPlan(user, entry)
+//   isMember(user), loadPrices() → { prices, fromCache }, loadUserDoc(user) → { settings?, lastPlan?, savedPlans? },
+//   saveSettings(user, settings), saveLastPlan(user, entry), saveSavedPlans(user, list)
 //
 // Membro = tem um documento em members/{uid} (ou admins/{uid}): só esses leem os preços e guardam dados.
 // Ter conta não chega (ver firestore.rules).
@@ -135,6 +135,7 @@ async function firebaseBackend() {
     },
     saveSettings: (user, settings) => store.setDoc(userRef(user), { settings }, { merge: true }),
     saveLastPlan: (user, entry) => store.setDoc(userRef(user), { lastPlan: entry }, { merge: true }),
+    saveSavedPlans: (user, list) => store.setDoc(userRef(user), { savedPlans: list }, { merge: true }),
   };
 }
 
@@ -173,6 +174,7 @@ function demoBackend() {
     loadUserDoc: async (user) => readJson(docKey(user)) ?? {},
     saveSettings: async (user, settings) => patch(user, { settings }),
     saveLastPlan: async (user, entry) => patch(user, { lastPlan: entry }),
+    saveSavedPlans: async (user, list) => patch(user, { savedPlans: list }),
   };
 }
 
@@ -194,6 +196,7 @@ function offlineBackend() {
     loadUserDoc: unavailable,
     saveSettings: unavailable,
     saveLastPlan: unavailable,
+    saveSavedPlans: unavailable,
   };
 }
 
